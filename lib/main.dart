@@ -1,14 +1,4 @@
-import 'package:flutter/material.dart'
-    show
-        AppBar,
-        BuildContext,
-        Center,
-        MaterialApp,
-        Scaffold,
-        StatelessWidget,
-        Text,
-        Widget,
-        runApp;
+import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
 
