@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:devlog_microblog_client/src/post_screen.dart';
+import 'package:devlog_microblog_client/src/settings_screen.dart';
 
 extension TruncateStringExtension on String {
   String truncateTo(int maxLength) =>
@@ -21,6 +23,10 @@ class MicroblogApp extends StatelessWidget {
     return MaterialApp(
       title: 'Devlog Microblog Client',
       home: MainScreen(),
+      routes: <String, WidgetBuilder>{
+        '/post': (BuildContext context) => PostEditScreen(),
+        '/settings': (BuildContext context) => SettingsScreen(),
+      },
     );
   }
 }
@@ -36,30 +42,34 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: true,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: _showPostEntryScreen,
+      ),
       appBar: AppBar(
         title: Text('Devlog Microblog Client'),
-      ),
-      body: MicroblogEntryList(),
-    );
-  }
-}
-
-class MicroblogEntryList extends StatefulWidget {
-  @override
-  _MicroblogEntryListState createState() => _MicroblogEntryListState();
-}
-
-class _MicroblogEntryListState extends State<MicroblogEntryList> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: ListView(
-        padding: const EdgeInsets.all(8),
-        children: <MicroblogEntryItem>[
-
+        actions: [
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: _openSettings,
+          ),
         ],
       ),
+      body: ListView.builder(
+        padding: EdgeInsets.all(8),
+        reverse: true,
+        itemBuilder: (_, int index) => _entries[index],
+        itemCount: _entries.length,
+      ),
     );
+  }
+
+  void _openSettings() {
+    Navigator.of(context).pushNamed('/settings');
+  }
+
+  void _showPostEntryScreen() {
+    Navigator.of(context).pushNamed('/post');
   }
 }
 
