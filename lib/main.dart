@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:devlog_microblog_client/src/post_screen.dart';
-import 'package:devlog_microblog_client/src/settings_screen.dart';
+import 'package:devlog_microblog_client/pages/post.dart';
+import 'package:devlog_microblog_client/pages/settings.dart';
+import 'package:devlog_microblog_client/pages/login.dart';
 
 extension TruncateStringExtension on String {
   String truncateTo(int maxLength) =>
@@ -26,7 +27,11 @@ class MicroblogApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/post': (BuildContext context) => PostEditScreen(),
         '/settings': (BuildContext context) => SettingsScreen(),
+        '/login': (BuildContext context) => LoginScreen(),
       },
+      theme: ThemeData(
+        primarySwatch: Colors.blueGrey,
+      ),
     );
   }
 }
