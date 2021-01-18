@@ -31,7 +31,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final List<MicroblogEntry> _entries = [];
+  final List<MicroblogEntryItem> _entries = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,20 +39,41 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: Text('Devlog Microblog Client'),
       ),
+      body: MicroblogEntryList(),
     );
   }
 }
 
-class MicroblogEntry extends StatelessWidget {
-  MicroblogEntry({this.date, this.title, this.text});
+class MicroblogEntryList extends StatefulWidget {
+  @override
+  _MicroblogEntryListState createState() => _MicroblogEntryListState();
+}
+
+class _MicroblogEntryListState extends State<MicroblogEntryList> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: ListView(
+        padding: const EdgeInsets.all(8),
+        children: <MicroblogEntryItem>[
+
+        ],
+      ),
+    );
+  }
+}
+
+class MicroblogEntryItem extends StatelessWidget {
+  MicroblogEntryItem({this.date, this.title, this.text});
   final String title;
   final String text;
   final DateTime date;
 
   @override
   Widget build(BuildContext context) {
-    final dateFormatted =
-        '${date.day.toString().padLeft(2, "0")}.${date.month.toString().padLeft(2, "0")}';
+    final dayStr = date.day.toString().padLeft(2, '0');
+    final mthStr = date.month.toString().padLeft(2, '0');
+    final dateFormatted = '$dayStr.$mthStr';
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -65,7 +86,7 @@ class MicroblogEntry extends StatelessWidget {
               children: [
                 Text(
                   dateFormatted,
-                  style: Theme.of(context).textTheme.headline4,
+                  style: Theme.of(context).textTheme.headline5,
                 ),
                 Text(
                   date.year.toString(),
