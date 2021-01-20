@@ -1,19 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-class UserSettingsModel {
-  bool unsecuredTransport;
-  bool storeCredentials;
-  String host;
-
-  UserSettingsModel(this.unsecuredTransport, this.storeCredentials, this.host);
-
-  void save(SharedPreferences prefs) {
-    prefs.setBool('unsecuredTransport', unsecuredTransport);
-    prefs.setBool('storeCredentials', storeCredentials);
-    prefs.setString('host', host);
-  }
-}
+import 'package:devlog_microblog_client/utils/userprefs.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -28,7 +15,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _future = _loadSettings();
+    _future = UserSettingsModel.load();
   }
 
   @override
@@ -95,14 +82,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         }
       },
     );
-  }
-
-  Future<UserSettingsModel> _loadSettings() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final unsecuredTransport = prefs.getBool('unsecuredTransport');
-    final storeCredentials = prefs.getBool('storeCredentials');
-    final host = prefs.getString('host');
-    return UserSettingsModel(unsecuredTransport, storeCredentials, host);
   }
 
   void _saveSettings() {
