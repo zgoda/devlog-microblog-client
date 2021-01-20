@@ -25,7 +25,8 @@ class UserSettingsModel {
     this.password = password;
   }
 
-  void save(SharedPreferences prefs) {
+  void save() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('unsecuredTransport', unsecuredTransport);
     prefs.setBool('storeCredentials', storeCredentials);
     prefs.setString('host', host);

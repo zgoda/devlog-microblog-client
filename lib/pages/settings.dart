@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:devlog_microblog_client/utils/userprefs.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -85,13 +84,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _saveSettings() {
-    SharedPreferences.getInstance().then((prefs) {
-      _settings.save(prefs);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Form data saved'),
-        ),
-      );
-    });
+    _settings.save();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Form data saved'),
+      ),
+    );
   }
 }
