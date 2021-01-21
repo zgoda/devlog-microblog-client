@@ -46,6 +46,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       });
                     },
                   ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Author',
+                      hintText: 'Default post author',
+                      contentPadding: EdgeInsets.all(10),
+                    ),
+                    initialValue: _settings.defaultAuthor,
+                    onChanged: (value) {
+                      setState(() {
+                        _settings.defaultAuthor = value;
+                      });
+                    },
+                  ),
                   SwitchListTile(
                     title: const Text('Use unsecured transport'),
                     value: _settings.unsecuredTransport,
