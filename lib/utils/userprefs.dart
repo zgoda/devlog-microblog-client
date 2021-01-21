@@ -43,6 +43,10 @@ class UserSettingsModel {
     this.password = password;
   }
 
+  bool hasValidCredentials() {
+    return storeCredentials && username != null && password != null;
+  }
+
   void save() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('unsecuredTransport', unsecuredTransport);
