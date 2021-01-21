@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class UserSettingsModel {
   bool unsecuredTransport;
@@ -16,7 +17,7 @@ class UserSettingsModel {
   );
 
   static Future<UserSettingsModel> load() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final unsecuredTransport = prefs.getBool('unsecuredTransport');
     final storeCredentials = prefs.getBool('storeCredentials');
     final host = prefs.getString('host');
@@ -27,8 +28,13 @@ class UserSettingsModel {
       host,
       defaultAuthor,
     );
-    model.username = prefs.getString('username');
-    model.password = prefs.getString('password');
+    final FlutterSecureStorage securePrefs = FlutterSecureStorage();
+    try {
+      model.username = await securePrefs.read(key: 'username');
+      model.password = await securePrefs.read(key: 'password');
+    } catch (e) {
+      securePrefs.deleteAll();
+    }
     return model;
   }
 
@@ -38,14 +44,19 @@ class UserSettingsModel {
   }
 
   void save() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('unsecuredTransport', unsecuredTransport);
     prefs.setBool('storeCredentials', storeCredentials);
     prefs.setString('host', host);
     prefs.setString('defaultAuthor', defaultAuthor);
     if (storeCredentials) {
-      prefs.setString('username', username);
-      prefs.setString('password', password);
+      final FlutterSecureStorage securePrefs = FlutterSecureStorage();
+      try {
+        securePrefs.write(key: 'username', value: username);
+        securePrefs.write(key: 'password', value: password);
+      } catch (e) {
+        securePrefs.deleteAll();
+      }
     }
   }
 }
