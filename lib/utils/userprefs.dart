@@ -18,8 +18,8 @@ class UserSettingsModel {
 
   static Future<UserSettingsModel> load() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final unsecuredTransport = prefs.getBool('unsecuredTransport');
-    final storeCredentials = prefs.getBool('storeCredentials');
+    final unsecuredTransport = prefs.getBool('unsecuredTransport') ?? false;
+    final storeCredentials = prefs.getBool('storeCredentials') ?? true;
     final host = prefs.getString('host');
     final defaultAuthor = prefs.getString('defaultAuthor');
     final model = UserSettingsModel(
