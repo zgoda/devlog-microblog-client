@@ -19,7 +19,7 @@ class PostListModel {
   String _token;
   String _apiRoot;
 
-  void _init() async {
+  Future<void> _init() async {
     if (_settings == null) {
       _settings = await UserSettingsModel.load();
     }
@@ -34,7 +34,7 @@ class PostListModel {
   }
 
   Future<bool> tryLogin() async {
-    _init();
+    await _init();
     if (_settings.hasCredentials()) {
       _token = await login(_settings.username, _settings.password);
       if (_token != '') {
@@ -45,7 +45,7 @@ class PostListModel {
   }
 
   Future<String> login(String name, String password) async {
-    _init();
+    await _init();
     final url = [_apiRoot, 'login'].join('/');
     final data = {
       'name': name,
@@ -60,6 +60,7 @@ class PostListModel {
   }
 
   void fetchPosts({int page = 1}) async {
+    await _init();
     if ([null, ''].contains(_token)) {
       return;
     }
@@ -68,7 +69,11 @@ class PostListModel {
     final headers = {
       'Authorization': 'Basic $_token',
     };
-    final resp = await http.get(url, headers: headers);
+    http.Response resp = await http.get(url, headers: headers);
+    if (resp.statusCode == 400) {
+      _token = await login(_settings.username, _settings.password);
+      resp = await http.get(url, headers: headers);
+    }
     if (resp.statusCode == 200) {
       final Map<String, List> respData = jsonDecode(resp.body);
       respData['quips'].map((item) {

@@ -43,6 +43,18 @@ class UserSettingsModel {
     this.password = password;
   }
 
+  void saveCredentials(String username, String password) {
+    if (storeCredentials) {
+      final FlutterSecureStorage securePrefs = FlutterSecureStorage();
+      try {
+        securePrefs.write(key: 'username', value: username);
+        securePrefs.write(key: 'password', value: password);
+      } catch (e) {
+        securePrefs.deleteAll();
+      }
+    }
+  }
+
   bool hasCredentials() {
     return storeCredentials && username != null && password != null;
   }
@@ -53,14 +65,6 @@ class UserSettingsModel {
     prefs.setBool('storeCredentials', storeCredentials);
     prefs.setString('host', host);
     prefs.setString('defaultAuthor', defaultAuthor);
-    if (storeCredentials) {
-      final FlutterSecureStorage securePrefs = FlutterSecureStorage();
-      try {
-        securePrefs.write(key: 'username', value: username);
-        securePrefs.write(key: 'password', value: password);
-      } catch (e) {
-        securePrefs.deleteAll();
-      }
-    }
+    saveCredentials(username, password);
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:devlog_microblog_client/utils/posts.dart';
+import 'package:devlog_microblog_client/pages/login.dart';
 
 extension TruncateStringExtension on String {
   String truncateTo(int maxLength) =>
@@ -12,10 +14,11 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final List<MicroblogEntryItem> _entries = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: true,
+      resizeToAvoidBottomInset: true,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: _showPostEntryScreen,
@@ -29,12 +32,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.all(8),
-        reverse: true,
-        itemBuilder: (_, int index) => _entries[index],
-        itemCount: _entries.length,
-      ),
+      body: postListWidget(_entries),
     );
   }
 
@@ -45,6 +43,30 @@ class _MainScreenState extends State<MainScreen> {
   void _showPostEntryScreen() {
     Navigator.of(context).pushNamed('/post');
   }
+}
+
+Widget postListWidget(List<MicroblogEntryItem> entries) {
+  final postListModel = PostListModel();
+  final _loggedIn = postListModel.tryLogin();
+  return FutureBuilder(
+    future: _loggedIn,
+    builder: (context, snapshot) {
+      if (snapshot.hasData) {
+        if (snapshot.data) {
+          return ListView.builder(
+            padding: EdgeInsets.all(8),
+            reverse: true,
+            itemBuilder: (_, int index) => entries[index],
+            itemCount: entries.length,
+          );
+        }
+        return LoginScreen();
+      }
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    },
+  );
 }
 
 class MicroblogEntryItem extends StatelessWidget {
