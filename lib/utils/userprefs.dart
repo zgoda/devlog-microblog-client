@@ -43,7 +43,7 @@ class UserSettingsModel {
     this.password = password;
   }
 
-  bool hasValidCredentials() {
+  bool hasCredentials() {
     return storeCredentials && username != null && password != null;
   }
 

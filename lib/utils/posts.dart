@@ -35,7 +35,7 @@ class PostListModel {
 
   Future<bool> tryLogin() async {
     _init();
-    if (_settings.hasValidCredentials()) {
+    if (_settings.hasCredentials()) {
       _token = await login(_settings.username, _settings.password);
       if (_token != '') {
         return true;
