@@ -1,4 +1,4 @@
-import 'package:devlog_microblog_client/utils/userprefs.dart';
+import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {

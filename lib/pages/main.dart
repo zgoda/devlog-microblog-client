@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:devlog_microblog_client/utils/posts.dart';
+import 'package:devlog_microblog_client/models/posts.dart';
 import 'package:devlog_microblog_client/pages/login.dart';
 
 extension TruncateStringExtension on String {

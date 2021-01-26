@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:devlog_microblog_client/utils/userprefs.dart';
+import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:http/http.dart' as http;
 
 class Post {
