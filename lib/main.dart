@@ -6,7 +6,9 @@ import 'package:devlog_microblog_client/pages/login.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() {
-  runApp(MicroblogApp());
+  runApp(
+    const ProviderScope(child: MicroblogApp()),
+  );
 }
 
 class MicroblogApp extends StatelessWidget {

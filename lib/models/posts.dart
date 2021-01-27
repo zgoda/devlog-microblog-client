@@ -16,10 +16,8 @@ class Post {
   }
 }
 
-class PostListModel extends StateNotifier<List<Post>> {
-  PostListModel([List<Post> posts]) : super(posts ?? []);
+class PostListModel {
+  const PostListModel(this.posts);
 
-  void add(Post post) {
-    state = [...state, post];
-  }
+  final List<Post> posts;
 }

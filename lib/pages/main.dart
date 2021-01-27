@@ -3,13 +3,20 @@ import 'package:devlog_microblog_client/models/posts.dart';
 import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/pages/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final postListProvider = StateNotifierProvider((ref) => PostListModel());
+class PostListNotifier extends StateNotifier<PostListModel> {
+  PostListNotifier() : super(_initialValue);
 
-final settingsProvider = FutureProvider<UserSettingsModel>((ref) async {
-  return await UserSettingsModel.load();
-});
+  static const _initialValue = PostListModel([]);
+
+  void add(Post post) {
+    state = PostListModel([...state.posts, post]);
+  }
+}
+
+final postListProvider = StateNotifierProvider((ref) => PostListNotifier());
 
 Widget postListWidget(List<MicroblogEntryItem> entries) {
   final postListModel = PostListModel();
@@ -35,9 +42,31 @@ Widget postListWidget(List<MicroblogEntryItem> entries) {
   );
 }
 
-class MainScreen extends StatefulWidget {
+class MainScreen extends HookWidget {
+  final List<MicroblogEntryItem> _entries = [];
+  final postListModel = useProvider(postListProvider.state);
+
   @override
-  _MainScreenState createState() => _MainScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => Navigator.of(context).pushNamed('/post'),
+      ),
+      appBar: AppBar(
+        title: Text('Devlog Microblog Client'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.more_vert),
+            onPressed: () => Navigator.of(context).pushNamed('/settings'),
+          ),
+        ],
+      ),
+      body: postListWidget(_entries),
+    );
+  }
+
 }
 
 class MicroblogEntryItem extends StatelessWidget {
@@ -88,38 +117,5 @@ class MicroblogEntryItem extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-class _MainScreenState extends State<MainScreen> {
-  final List<MicroblogEntryItem> _entries = [];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: _showPostEntryScreen,
-      ),
-      appBar: AppBar(
-        title: Text('Devlog Microblog Client'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.more_vert),
-            onPressed: _openSettings,
-          ),
-        ],
-      ),
-      body: postListWidget(_entries),
-    );
-  }
-
-  void _openSettings() {
-    Navigator.of(context).pushNamed('/settings');
-  }
-
-  void _showPostEntryScreen() {
-    Navigator.of(context).pushNamed('/post');
   }
 }
