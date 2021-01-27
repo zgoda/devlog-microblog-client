@@ -32,6 +32,7 @@ class AuthenticationService {
   }
 
   bool hasCredentials() => ![_userName, _password].contains(null);
+  bool isLoggedIn() => !['', null].contains(_token);
 
   Future<bool> login() async {
     final data = {

@@ -1,7 +1,4 @@
-import 'dart:convert';
-
-import 'package:devlog_microblog_client/models/userprefs.dart';
-import 'package:http/http.dart' as http;
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class Post {
   String title;
@@ -10,80 +7,19 @@ class Post {
   int postId;
 
   Post({this.postId, this.title, this.text, this.date});
+
+  Post.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    text = json['text'];
+    date = json['created'];
+    postId = json['pk'];
+  }
 }
 
-class PostListModel {
-  UserSettingsModel _settings;
-  final List<Post> posts = [];
-  int _page = 1;
-  String _token;
-  String _apiRoot;
+class PostListModel extends StateNotifier<List<Post>> {
+  PostListModel([List<Post> posts]) : super(posts ?? []);
 
-  Future<void> _init() async {
-    if (_settings == null) {
-      _settings = await UserSettingsModel.load();
-    }
-    final List<String> parts = [];
-    if (_settings.unsecuredTransport) {
-      parts.add('http:/');
-    } else {
-      parts.add('https:/');
-    }
-    parts.addAll([_settings.host, 'api/v1']);
-    _apiRoot = parts.join('/');
-  }
-
-  Future<bool> tryLogin() async {
-    await _init();
-    if (_settings.hasCredentials()) {
-      _token = await login(_settings.username, _settings.password);
-      if (_token != '') {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  Future<String> login(String name, String password) async {
-    await _init();
-    final url = [_apiRoot, 'login'].join('/');
-    final data = {
-      'name': name,
-      'password': password,
-    };
-    final resp = await http.post(url, body: data);
-    if (resp.statusCode == 200) {
-      final Map<String, String> respData = jsonDecode(resp.body);
-      return respData['token'];
-    }
-    return '';
-  }
-
-  void fetchPosts({int page = 1}) async {
-    await _init();
-    if ([null, ''].contains(_token)) {
-      return;
-    }
-    _page = page;
-    final url = [_apiRoot, 'quips?p=$_page'].join('/');
-    final headers = {
-      'Authorization': 'Basic $_token',
-    };
-    http.Response resp = await http.get(url, headers: headers);
-    if (resp.statusCode == 400) {
-      _token = await login(_settings.username, _settings.password);
-      resp = await http.get(url, headers: headers);
-    }
-    if (resp.statusCode == 200) {
-      final Map<String, List> respData = jsonDecode(resp.body);
-      respData['quips'].map((item) {
-        posts.add(Post(
-          postId: item['pk'],
-          title: item['title'],
-          text: item['text'],
-          date: item['created'],
-        ));
-      });
-    }
+  void add(Post post) {
+    state = [...state, post];
   }
 }
