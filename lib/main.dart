@@ -1,11 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:devlog_microblog_client/pages/home.dart';
+import 'package:devlog_microblog_client/pages/login.dart';
 import 'package:devlog_microblog_client/pages/post.dart';
 import 'package:devlog_microblog_client/pages/settings.dart';
-import 'package:devlog_microblog_client/pages/login.dart';
+import 'package:devlog_microblog_client/servicelocator.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await setupServiceLocator();
   runApp(
     const ProviderScope(child: MicroblogApp()),
   );
