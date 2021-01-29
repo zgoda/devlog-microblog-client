@@ -1,9 +1,16 @@
+import 'package:hooks_riverpod/all.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+final userSettingsProvider = FutureProvider<UserSettingsModel>((_) async {
+  final settings = await UserSettingsModel.load();
+  return settings;
+});
 
 class UserSettingsModel {
   bool unsecuredTransport;
   bool storeCredentials;
+  bool modeOffline;
   String host;
   String defaultAuthor;
   String username;
@@ -12,6 +19,7 @@ class UserSettingsModel {
   UserSettingsModel(
     this.unsecuredTransport,
     this.storeCredentials,
+    this.modeOffline,
     this.host,
     this.defaultAuthor,
   );
@@ -20,11 +28,13 @@ class UserSettingsModel {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final unsecuredTransport = prefs.getBool('unsecuredTransport') ?? false;
     final storeCredentials = prefs.getBool('storeCredentials') ?? true;
+    final modeOffline = prefs.getBool('modeOffline') ?? false;
     final host = prefs.getString('host');
     final defaultAuthor = prefs.getString('defaultAuthor');
     final model = UserSettingsModel(
       unsecuredTransport,
       storeCredentials,
+      modeOffline,
       host,
       defaultAuthor,
     );
@@ -63,6 +73,7 @@ class UserSettingsModel {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('unsecuredTransport', unsecuredTransport);
     prefs.setBool('storeCredentials', storeCredentials);
+    prefs.setBool('modeOffline', modeOffline);
     prefs.setString('host', host);
     prefs.setString('defaultAuthor', defaultAuthor);
     saveCredentials(username, password);

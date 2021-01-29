@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:devlog_microblog_client/pages/main.dart';
+import 'package:devlog_microblog_client/pages/home.dart';
 import 'package:devlog_microblog_client/pages/post.dart';
 import 'package:devlog_microblog_client/pages/settings.dart';
 import 'package:devlog_microblog_client/pages/login.dart';
@@ -18,18 +18,16 @@ class MicroblogApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderScope(
-      child: MaterialApp(
-        title: 'Devlog Microblog Client',
-        home: MainScreen(),
-        routes: <String, WidgetBuilder>{
-          '/post': (BuildContext context) => PostEditScreen(),
-          '/settings': (BuildContext context) => SettingsScreen(),
-          '/login': (BuildContext context) => LoginScreen(),
-        },
-        theme: ThemeData(
-          primarySwatch: Colors.blueGrey,
-        ),
+    return MaterialApp(
+      title: 'Devlog Microblog Client',
+      home: HomeScreen(),
+      routes: <String, WidgetBuilder>{
+        '/post': (BuildContext context) => PostEditScreen(),
+        '/settings': (BuildContext context) => SettingsScreen(),
+        '/login': (BuildContext context) => LoginScreen(),
+      },
+      theme: ThemeData(
+        primarySwatch: Colors.blueGrey,
       ),
     );
   }

@@ -1,56 +1,16 @@
 import 'package:devlog_microblog_client/extensions.dart';
 import 'package:devlog_microblog_client/models/posts.dart';
-import 'package:devlog_microblog_client/models/userprefs.dart';
-import 'package:devlog_microblog_client/pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PostListNotifier extends StateNotifier<PostListModel> {
-  PostListNotifier() : super(_initialValue);
-
-  static const _initialValue = PostListModel([]);
-
-  void add(Post post) {
-    state = PostListModel([...state.posts, post]);
-  }
-}
-
-final postListProvider = StateNotifierProvider((ref) => PostListNotifier());
-
-Widget postListWidget(List<MicroblogEntryItem> entries) {
-  final postListModel = PostListModel();
-  final _loggedIn = postListModel.tryLogin();
-  return FutureBuilder(
-    future: _loggedIn,
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        if (snapshot.data) {
-          return ListView.builder(
-            padding: EdgeInsets.all(8),
-            reverse: true,
-            itemBuilder: (_, int index) => entries[index],
-            itemCount: entries.length,
-          );
-        }
-        return LoginScreen();
-      }
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    },
-  );
-}
-
-class MainScreen extends HookWidget {
-  final List<MicroblogEntryItem> _entries = [];
-  final postListModel = useProvider(postListProvider.state);
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       floatingActionButton: FloatingActionButton(
+        tooltip: 'Create new post',
         child: Icon(Icons.add),
         onPressed: () => Navigator.of(context).pushNamed('/post'),
       ),
@@ -63,22 +23,34 @@ class MainScreen extends HookWidget {
           ),
         ],
       ),
-      body: postListWidget(_entries),
+      body: MicroblogEntryList(),
     );
   }
-
 }
 
-class MicroblogEntryItem extends StatelessWidget {
-  final String title;
-  final String text;
-  final DateTime date;
-  MicroblogEntryItem({this.date, this.title, this.text});
+class MicroblogEntryList extends HookWidget {
+  const MicroblogEntryList({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final dayStr = date.day.toString().padLeft(2, '0');
-    final mthStr = date.month.toString().padLeft(2, '0');
+    final postListModel = useProvider(postListProvider.state);
+    return ListView.builder(
+      padding: EdgeInsets.all(8),
+      itemBuilder: (_, int index) =>
+          MicroblogEntryItem(post: postListModel.posts[index]),
+      itemCount: postListModel.posts.length,
+    );
+  }
+}
+
+class MicroblogEntryItem extends StatelessWidget {
+  final Post post;
+  MicroblogEntryItem({this.post});
+
+  @override
+  Widget build(BuildContext context) {
+    final dayStr = post.date.day.toString().padLeft(2, '0');
+    final mthStr = post.date.month.toString().padLeft(2, '0');
     final dateFormatted = '$dayStr.$mthStr';
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
@@ -95,7 +67,7 @@ class MicroblogEntryItem extends StatelessWidget {
                   style: Theme.of(context).textTheme.headline5,
                 ),
                 Text(
-                  date.year.toString(),
+                  post.date.year.toString(),
                   style: Theme.of(context).textTheme.headline6,
                 )
               ],
@@ -105,12 +77,12 @@ class MicroblogEntryItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                post.title,
                 style: Theme.of(context).textTheme.headline6,
               ),
               Container(
                 margin: EdgeInsets.only(top: 5),
-                child: Text(text.truncateTo(30)),
+                child: Text(post.text.truncateTo(30)),
               ),
             ],
           ),
