@@ -11,7 +11,9 @@ class SettingsScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final _host = useState(_settings.host);
+    final _hostController = useTextEditingController(text: _settings.host);
     final _defaultAuthor = useState(_settings.defaultAuthor);
+    final _defaultAuthorController = useTextEditingController(text: _settings.defaultAuthor);
     final _unsecuredTransport = useState(_settings.unsecuredTransport);
     final _modeOffline = useState(_settings.modeOffline);
     final _storeCredentials = useState(_settings.storeCredentials);
@@ -28,9 +30,10 @@ class SettingsScreen extends HookWidget {
               hintText: 'Host name or IP address',
               contentPadding: EdgeInsets.all(10),
             ),
-            initialValue: _settings.host,
+            controller: _hostController,
             onChanged: (value) {
               _host.value = value;
+              _settings.host = value;
             },
           ),
           TextFormField(
@@ -39,30 +42,34 @@ class SettingsScreen extends HookWidget {
               hintText: 'Default post author',
               contentPadding: EdgeInsets.all(10),
             ),
-            initialValue: _settings.defaultAuthor,
+            controller: _defaultAuthorController,
             onChanged: (value) {
               _defaultAuthor.value = value;
+              _settings.defaultAuthor = value;
             },
           ),
           SwitchListTile(
             title: const Text('Use unsecured transport'),
-            value: _settings.unsecuredTransport,
+            value: _unsecuredTransport.value,
             onChanged: (value) {
               _unsecuredTransport.value = value;
+              _settings.unsecuredTransport = value;
             },
           ),
           SwitchListTile(
             title: const Text('Offline mode'),
-            value: _settings.modeOffline,
+            value: _modeOffline.value,
             onChanged: (value) {
               _modeOffline.value = value;
+              _settings.modeOffline = value;
             },
           ),
           SwitchListTile(
             title: const Text('Store login credentials'),
-            value: _settings.storeCredentials,
+            value: _storeCredentials.value,
             onChanged: (value) {
               _storeCredentials.value = value;
+              _settings.storeCredentials = value;
             },
           ),
           ElevatedButton(
