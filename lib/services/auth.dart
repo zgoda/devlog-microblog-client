@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:devlog_microblog_client/models/userprefs.dart';
+import 'package:devlog_microblog_client/servicelocator.dart';
+import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:http/http.dart' as http;
 
 class AuthenticationService {
@@ -9,18 +10,20 @@ class AuthenticationService {
   String _url;
   String _token;
 
-  AuthenticationService(UserSettingsModel settings) {
-    if (settings.hasCredentials()) {
-      _userName = settings.username;
-      _password = settings.password;
+  final _settings = locator<LocalStorageService>().settings;
+
+  AuthenticationService() {
+    if (_settings.hasCredentials()) {
+      _userName = _settings.username;
+      _password = _settings.password;
     }
     final List<String> parts = [];
-    if (settings.unsecuredTransport) {
+    if (_settings.unsecuredTransport) {
       parts.add('http:/');
     } else {
       parts.add('https:/');
     }
-    parts.addAll([settings.host, 'api/v1/login']);
+    parts.addAll([_settings.host, 'api/v1/login']);
     _url = parts.join('/');
   }
 

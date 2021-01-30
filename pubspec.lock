@@ -186,7 +186,7 @@ packages:
       name: integration_test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2+2"
   js:
     dependency: transitive
     description:
@@ -429,7 +429,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.7.4"
+    version: "1.7.4+1"
   xdg_directories:
     dependency: transitive
     description:

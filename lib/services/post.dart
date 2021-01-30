@@ -1,22 +1,24 @@
 import 'dart:convert';
 
 import 'package:devlog_microblog_client/models/posts.dart';
-import 'package:devlog_microblog_client/models/userprefs.dart';
+import 'package:devlog_microblog_client/servicelocator.dart';
 import 'package:devlog_microblog_client/services/auth.dart';
+import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:http/http.dart' as http;
 
-class PostService {
+class PostCollectionService {
   String _collectionUrl;
   int _currentPage = 1;
+  final _settings = locator<LocalStorageService>().settings;
 
-  PostService(UserSettingsModel settings) {
+  PostCollectionService() {
     final List<String> parts = [];
-    if (settings.unsecuredTransport) {
+    if (_settings.unsecuredTransport) {
       parts.add('http:/');
     } else {
       parts.add('https:/');
     }
-    parts.addAll([settings.host, 'api/v1']);
+    parts.addAll([_settings.host, 'api/v1']);
     final root = parts.join('/');
     _collectionUrl = root + '/quips';
   }
