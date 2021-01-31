@@ -9,22 +9,25 @@ import 'package:http/http.dart' as http;
 class PostCollectionService {
   String _collectionUrl;
   int _currentPage = 1;
-  final _settings = locator<LocalStorageService>().settings;
 
   PostCollectionService() {
     final List<String> parts = [];
-    if (_settings.unsecuredTransport) {
-      parts.add('http:/');
-    } else {
-      parts.add('https:/');
-    }
-    parts.addAll([_settings.host, 'api/v1']);
-    final root = parts.join('/');
-    _collectionUrl = root + '/quips';
+    locator.allReady().whenComplete(() {
+      final settings = locator<LocalStorageService>().settings;
+      if (settings.unsecuredTransport) {
+        parts.add('http:/');
+      } else {
+        parts.add('https:/');
+      }
+      parts.addAll([settings.host, 'api/v1']);
+      final root = parts.join('/');
+      _collectionUrl = root + '/quips';
+    });
   }
 
-  Future<List<Post>> fetchCollection(AuthenticationService auth,
-      {page: 1}) async {
+  Future<List<Post>> fetchCollection({page: 1}) async {
+    await locator.allReady();
+    final auth = locator<AuthenticationService>();
     if (!auth.isLoggedIn()) {
       await auth.login();
     }

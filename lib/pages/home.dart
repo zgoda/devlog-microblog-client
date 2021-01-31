@@ -2,23 +2,24 @@ import 'package:devlog_microblog_client/extensions.dart';
 import 'package:devlog_microblog_client/models/posts.dart';
 import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/servicelocator.dart';
+import 'package:devlog_microblog_client/services/auth.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomeScreen extends StatelessWidget {
+  final _future = locator.allReady();
   @override
   Widget build(BuildContext context) {
-    Future<void> future = locator.allReady();
-    future.whenComplete(() {
+    _future.whenComplete(() {
       UserSettingsModel settings = locator<LocalStorageService>().settings;
       if (!settings.isConfigured()) {
         Future.delayed(Duration.zero, () => _askForSettingsDialog(context));
       }
     });
     return FutureBuilder(
-      future: future,
+      future: _future,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
@@ -121,11 +122,23 @@ class MicroblogEntryItem extends StatelessWidget {
 }
 
 class MicroblogEntryList extends HookWidget {
-  const MicroblogEntryList({Key key}) : super(key: key);
+  MicroblogEntryList({Key key}) : super(key: key);
+  final _future = locator.allReady();
 
   @override
   Widget build(BuildContext context) {
     final postListModel = useProvider(postListProvider.state);
+    _future.whenComplete(() {
+      final settings = locator<LocalStorageService>().settings;
+      final auth = locator<AuthenticationService>();
+      if (!auth.isLoggedIn()) {
+        if (settings.hasCredentials()) {
+          auth.login();
+        } else {
+          Navigator.of(context).pushNamed('/login');
+        }
+      }
+    });
     return ListView.builder(
       padding: EdgeInsets.all(8),
       itemBuilder: (_, int index) =>

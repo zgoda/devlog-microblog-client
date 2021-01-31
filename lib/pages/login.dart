@@ -1,29 +1,26 @@
-import 'package:devlog_microblog_client/models/userprefs.dart';
+import 'package:devlog_microblog_client/servicelocator.dart';
+import 'package:devlog_microblog_client/services/auth.dart';
+import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class LoginScreen extends StatefulWidget {
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  Future<UserSettingsModel> _future;
-  UserSettingsModel _model;
-  final _userNameController = TextEditingController();
-  final _passwordController = TextEditingController();
-
+class LoginScreen extends HookWidget {
+  final settings = locator<LocalStorageService>().settings;
+  final auth = locator<AuthenticationService>();
   @override
   Widget build(BuildContext context) {
+    final userNameController = useTextEditingController();
     final userNameField = TextField(
-      controller: _userNameController,
+      controller: userNameController,
       obscureText: false,
       decoration: InputDecoration(
         hintText: 'User name',
         contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
       ),
     );
+    final passwordController = useTextEditingController();
     final passwordField = TextField(
-      controller: _passwordController,
+      controller: passwordController,
       obscureText: true,
       decoration: InputDecoration(
         hintText: 'Password',
@@ -36,33 +33,40 @@ class _LoginScreenState extends State<LoginScreen> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        onPressed: _loginButtonPressed,
+        onPressed: () {
+          settings.setCredentials(
+              userNameController.text, passwordController.text);
+          auth.login();
+          settings.save();
+        },
         child: Text(
           'Login',
           textAlign: TextAlign.center,
         ),
       ),
     );
+    Future<void> future = locator.allReady();
     return FutureBuilder(
-      future: _future,
-      builder: (context, snapshot) {
+      future: future,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
-          _model = snapshot.data;
-          return Center(
-            child: Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(36),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    userNameField,
-                    SizedBox(height: 25),
-                    passwordField,
-                    SizedBox(height: 35),
-                    loginButton,
-                  ],
+          return Scaffold(
+            body: Center(
+              child: Container(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(36),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      userNameField,
+                      SizedBox(height: 25),
+                      passwordField,
+                      SizedBox(height: 35),
+                      loginButton,
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -73,23 +77,5 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       },
     );
-  }
-
-  @override
-  void dispose() {
-    _userNameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    _future = UserSettingsModel.load();
-    super.initState();
-  }
-
-  void _loginButtonPressed() {
-    _model.setCredentials(_userNameController.text, _passwordController.text);
-    _model.save();
   }
 }

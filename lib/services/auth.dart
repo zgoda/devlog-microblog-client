@@ -5,6 +5,7 @@ import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:http/http.dart' as http;
 
 class AuthenticationService {
+  static AuthenticationService _instance;
   String _userName;
   String _password;
   String _url;
@@ -12,11 +13,14 @@ class AuthenticationService {
 
   final _settings = locator<LocalStorageService>().settings;
 
-  AuthenticationService() {
-    if (_settings.hasCredentials()) {
-      _userName = _settings.username;
-      _password = _settings.password;
+  static getInstance() {
+    if (_instance == null) {
+      _instance = AuthenticationService();
     }
+    return _instance;
+  }
+
+  AuthenticationService() {
     final List<String> parts = [];
     if (_settings.unsecuredTransport) {
       parts.add('http:/');
@@ -39,12 +43,12 @@ class AuthenticationService {
 
   Future<bool> login() async {
     final data = {
-      'name': _userName,
-      'password': _password,
+      'name': _settings.username,
+      'password': _settings.password,
     };
     final resp = await http.post(_url, body: data);
     if (resp.statusCode == 200) {
-      final Map<String, String> respData = jsonDecode(resp.body);
+      final Map<String, dynamic> respData = jsonDecode(resp.body);
       _token = respData['token'];
       return true;
     }
