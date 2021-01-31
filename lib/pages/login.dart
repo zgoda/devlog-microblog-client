@@ -62,7 +62,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     passwordField,
                     SizedBox(height: 35),
                     loginButton,
-                    SizedBox(height: 15),
                   ],
                 ),
               ),

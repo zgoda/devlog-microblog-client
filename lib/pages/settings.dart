@@ -13,7 +13,8 @@ class SettingsScreen extends HookWidget {
     final _host = useState(_settings.host);
     final _hostController = useTextEditingController(text: _settings.host);
     final _defaultAuthor = useState(_settings.defaultAuthor);
-    final _defaultAuthorController = useTextEditingController(text: _settings.defaultAuthor);
+    final _defaultAuthorController =
+        useTextEditingController(text: _settings.defaultAuthor);
     final _unsecuredTransport = useState(_settings.unsecuredTransport);
     final _modeOffline = useState(_settings.modeOffline);
     final _storeCredentials = useState(_settings.storeCredentials);
@@ -24,6 +25,7 @@ class SettingsScreen extends HookWidget {
       ),
       body: Column(
         children: <Widget>[
+          SizedBox(height: 15),
           TextFormField(
             decoration: InputDecoration(
               labelText: 'Host',
@@ -36,6 +38,7 @@ class SettingsScreen extends HookWidget {
               _settings.host = value;
             },
           ),
+          SizedBox(height: 25),
           TextFormField(
             decoration: InputDecoration(
               labelText: 'Author',
@@ -48,6 +51,7 @@ class SettingsScreen extends HookWidget {
               _settings.defaultAuthor = value;
             },
           ),
+          SizedBox(height: 25),
           SwitchListTile(
             title: const Text('Use unsecured transport'),
             value: _unsecuredTransport.value,
@@ -72,9 +76,13 @@ class SettingsScreen extends HookWidget {
               _settings.storeCredentials = value;
             },
           ),
+          SizedBox(height: 25),
           ElevatedButton(
             child: Text('Save'),
-            onPressed: _saveSettings,
+            onPressed: () {
+              _saveSettings();
+              Navigator.of(context).pop();
+            },
           ),
         ],
       ),

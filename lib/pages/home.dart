@@ -1,35 +1,13 @@
 import 'package:devlog_microblog_client/extensions.dart';
 import 'package:devlog_microblog_client/models/posts.dart';
 import 'package:devlog_microblog_client/models/userprefs.dart';
+import 'package:devlog_microblog_client/servicelocator.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:devlog_microblog_client/servicelocator.dart';
 
 class HomeScreen extends HookWidget {
-  Future<void> _askForSettingsDialog(BuildContext ctx) async {
-    var valueSelected = await showDialog(
-      context: ctx,
-      builder: (_) => AlertDialog(
-        title: Text('Application not configured'),
-        content: Text(
-            'Application is not configured yet, do you want to open settings page?'),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              Navigator.of(ctx).pop(true);
-            },
-            child: Text('Yes'),
-          ),
-        ],
-      ),
-    );
-    if (valueSelected != null && valueSelected) {
-      Navigator.of(ctx).pushNamed('/settings');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     Future<void> future = locator.allReady();
@@ -69,20 +47,27 @@ class HomeScreen extends HookWidget {
       },
     );
   }
-}
 
-class MicroblogEntryList extends HookWidget {
-  const MicroblogEntryList({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final postListModel = useProvider(postListProvider.state);
-    return ListView.builder(
-      padding: EdgeInsets.all(8),
-      itemBuilder: (_, int index) =>
-          MicroblogEntryItem(post: postListModel.posts[index]),
-      itemCount: postListModel.posts.length,
+  Future<void> _askForSettingsDialog(BuildContext ctx) async {
+    var valueSelected = await showDialog(
+      context: ctx,
+      builder: (_) => AlertDialog(
+        title: Text('Application not configured'),
+        content: Text(
+            'Application is not configured yet, do you want to open settings page?'),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              Navigator.of(ctx).pop(true);
+            },
+            child: Text('Yes'),
+          ),
+        ],
+      ),
     );
+    if (valueSelected != null && valueSelected) {
+      Navigator.of(ctx).pushNamed('/settings');
+    }
   }
 }
 
@@ -131,6 +116,21 @@ class MicroblogEntryItem extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class MicroblogEntryList extends HookWidget {
+  const MicroblogEntryList({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final postListModel = useProvider(postListProvider.state);
+    return ListView.builder(
+      padding: EdgeInsets.all(8),
+      itemBuilder: (_, int index) =>
+          MicroblogEntryItem(post: postListModel.posts[index]),
+      itemCount: postListModel.posts.length,
     );
   }
 }
