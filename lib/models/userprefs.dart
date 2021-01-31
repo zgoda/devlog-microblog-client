@@ -63,6 +63,10 @@ class UserSettingsModel {
     return storeCredentials && username != null && password != null;
   }
 
+  bool isConfigured() {
+    return ![null, ''].contains(host);
+  }
+
   void save() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('unsecuredTransport', unsecuredTransport);
