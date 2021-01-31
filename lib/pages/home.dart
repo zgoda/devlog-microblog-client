@@ -3,27 +3,39 @@ import 'package:devlog_microblog_client/models/posts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:devlog_microblog_client/servicelocator.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Create new post',
-        child: Icon(Icons.add),
-        onPressed: () => Navigator.of(context).pushNamed('/post'),
-      ),
-      appBar: AppBar(
-        title: Text('Devlog Microblog Client'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.more_vert),
-            onPressed: () => Navigator.of(context).pushNamed('/settings'),
-          ),
-        ],
-      ),
-      body: MicroblogEntryList(),
+    return FutureBuilder(
+      future: locator.allReady(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          return Scaffold(
+            resizeToAvoidBottomInset: true,
+            floatingActionButton: FloatingActionButton(
+              tooltip: 'Create new post',
+              child: Icon(Icons.add),
+              onPressed: () => Navigator.of(context).pushNamed('/post'),
+            ),
+            appBar: AppBar(
+              title: Text('Devlog Microblog Client'),
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.more_vert),
+                  onPressed: () => Navigator.of(context).pushNamed('/settings'),
+                ),
+              ],
+            ),
+            body: MicroblogEntryList(),
+          );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 }
