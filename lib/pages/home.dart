@@ -137,6 +137,12 @@ class MicroblogEntryList extends HookWidget {
         await auth.login();
         final posts = await postService.fetchCollection();
         context.read(postListProvider).addAll(posts);
+      } else {
+        final loginFormResult = await Navigator.of(context).pushNamed('/login');
+        if (loginFormResult) {
+          final posts = await postService.fetchCollection();
+          context.read(postListProvider).addAll(posts);
+        }
       }
     });
     final postListModel = useProvider(postListProvider.state);

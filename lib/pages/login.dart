@@ -33,13 +33,25 @@ class LoginScreen extends HookWidget {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        onPressed: () {
+        onPressed: () async {
           settings.setCredentials(
               userNameController.text, passwordController.text);
-          auth.login().whenComplete(() {
+          final loginResult = await auth.login();
+          if (loginResult) {
             settings.save();
-            Navigator.of(context).pop(true);
-          });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('User logged in'),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Login failed'),
+              ),
+            );
+          }
+          Navigator.of(context).pop(loginResult);
         },
         child: Text(
           'Login',
