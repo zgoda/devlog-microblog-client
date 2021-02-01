@@ -27,7 +27,7 @@ class Post {
   Post.fromJson(Map<String, dynamic> json) {
     title = json['title'];
     text = json['text'];
-    date = json['created'];
+    date = DateTime.parse(json['created']);
     postId = json['pk'];
   }
 }

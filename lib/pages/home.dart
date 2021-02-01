@@ -9,14 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends HookWidget {
   final _future = locator.allReady();
   @override
   Widget build(BuildContext context) {
-    _future.whenComplete(() {
+    useMemoized(() async {
+      await _future;
       UserSettingsModel settings = locator<LocalStorageService>().settings;
       if (!settings.isConfigured()) {
-        Future.delayed(Duration.zero, () => _askForSettingsDialog(context));
+        await _askForSettingsDialog(context);
       }
     });
     return FutureBuilder(
@@ -94,11 +95,11 @@ class MicroblogEntryItem extends StatelessWidget {
               children: [
                 Text(
                   dateFormatted,
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.headline6,
                 ),
                 Text(
                   post.date.year.toString(),
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.headline5,
                 )
               ],
             ),
@@ -107,7 +108,7 @@ class MicroblogEntryItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                post.title,
+                post.title ?? '',
                 style: Theme.of(context).textTheme.headline6,
               ),
               Container(
@@ -133,15 +134,18 @@ class MicroblogEntryList extends HookWidget {
       final settings = locator<LocalStorageService>().settings;
       final auth = locator<AuthenticationService>();
       final postService = locator<PostCollectionService>();
-      if (settings.hasCredentials()) {
-        await auth.login();
-        final posts = await postService.fetchCollection();
-        context.read(postListProvider).addAll(posts);
-      } else {
-        final loginFormResult = await Navigator.of(context).pushNamed('/login');
-        if (loginFormResult) {
+      if (settings.isConfigured()) {
+        if (settings.hasCredentials()) {
+          await auth.login();
           final posts = await postService.fetchCollection();
           context.read(postListProvider).addAll(posts);
+        } else {
+          final loginFormResult =
+              await Navigator.of(context).pushNamed('/login');
+          if (loginFormResult) {
+            final posts = await postService.fetchCollection();
+            context.read(postListProvider).addAll(posts);
+          }
         }
       }
     });

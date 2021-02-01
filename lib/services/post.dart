@@ -26,13 +26,12 @@ class PostCollectionService {
   }
 
   Future<List<Post>> fetchCollection({int page: 1}) async {
-    await locator.allReady();
+    _currentPage = page;
+    final url = '$_collectionUrl?p=$_currentPage';
     final auth = locator<AuthenticationService>();
     if (!auth.isLoggedIn()) {
       await auth.login();
     }
-    _currentPage = page;
-    final url = '$_collectionUrl?p=$_currentPage';
     Map<String, String> headers = auth.authHeader();
     http.Response resp = await http.get(url, headers: headers);
     if (resp.statusCode == 400) {
@@ -42,8 +41,8 @@ class PostCollectionService {
     }
     if (resp.statusCode == 200) {
       final Map<String, dynamic> respData = jsonDecode(resp.body);
-      List<Post> posts = [];
-      respData['quips'].map((item) => posts.add(Post.fromJson(item)));
+      final posts =
+          respData['quips'].map<Post>((item) => Post.fromJson(item)).toList();
       return posts;
     }
     return [];
