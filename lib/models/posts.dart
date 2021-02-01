@@ -8,6 +8,10 @@ class PostListNotifier extends StateNotifier<PostListModel> {
   void add(Post post) {
     state = PostListModel([...state.posts, post]);
   }
+
+  void addAll(List<Post> posts) {
+    state = PostListModel([...state.posts, ...posts]);
+  }
 }
 
 final postListProvider = StateNotifierProvider((ref) => PostListNotifier());

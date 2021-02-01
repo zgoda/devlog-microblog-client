@@ -4,6 +4,7 @@ import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/servicelocator.dart';
 import 'package:devlog_microblog_client/services/auth.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
+import 'package:devlog_microblog_client/services/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -127,18 +128,18 @@ class MicroblogEntryList extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final postListModel = useProvider(postListProvider.state);
-    _future.whenComplete(() {
+    useMemoized(() async {
+      await _future;
       final settings = locator<LocalStorageService>().settings;
       final auth = locator<AuthenticationService>();
-      if (!auth.isLoggedIn()) {
-        if (settings.hasCredentials()) {
-          auth.login();
-        } else {
-          Navigator.of(context).pushNamed('/login');
-        }
+      final postService = locator<PostCollectionService>();
+      if (settings.hasCredentials()) {
+        await auth.login();
+        final posts = await postService.fetchCollection();
+        context.read(postListProvider).addAll(posts);
       }
     });
+    final postListModel = useProvider(postListProvider.state);
     return ListView.builder(
       padding: EdgeInsets.all(8),
       itemBuilder: (_, int index) =>

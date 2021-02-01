@@ -25,7 +25,7 @@ class PostCollectionService {
     });
   }
 
-  Future<List<Post>> fetchCollection({page: 1}) async {
+  Future<List<Post>> fetchCollection({int page: 1}) async {
     await locator.allReady();
     final auth = locator<AuthenticationService>();
     if (!auth.isLoggedIn()) {
@@ -41,7 +41,7 @@ class PostCollectionService {
       resp = await http.get(url, headers: headers);
     }
     if (resp.statusCode == 200) {
-      final Map<String, List> respData = jsonDecode(resp.body);
+      final Map<String, dynamic> respData = jsonDecode(resp.body);
       List<Post> posts = [];
       respData['quips'].map((item) => posts.add(Post.fromJson(item)));
       return posts;

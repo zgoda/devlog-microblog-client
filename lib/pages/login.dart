@@ -36,8 +36,10 @@ class LoginScreen extends HookWidget {
         onPressed: () {
           settings.setCredentials(
               userNameController.text, passwordController.text);
-          auth.login();
-          settings.save();
+          auth.login().whenComplete(() {
+            settings.save();
+            Navigator.of(context).pop(true);
+          });
         },
         child: Text(
           'Login',
