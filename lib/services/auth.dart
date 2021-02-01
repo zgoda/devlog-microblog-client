@@ -1,8 +1,18 @@
 import 'dart:convert';
 
-import 'package:devlog_microblog_client/servicelocator.dart';
+import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
+
+final authenticationServiceProvider = Provider<AuthenticationService>((ref) {
+  final settingsData = ref.watch(settingsProvider);
+  AuthenticationService service;
+  settingsData.whenData(
+    (settings) => service = AuthenticationService.getInstance(settings),
+  );
+  return service;
+});
 
 class AuthenticationService {
   static AuthenticationService _instance;
@@ -11,16 +21,17 @@ class AuthenticationService {
   String _url;
   String _token;
 
-  final _settings = locator<LocalStorageService>().settings;
+  UserSettingsModel _settings;
 
-  static getInstance() {
+  static getInstance(UserSettingsModel settings) {
     if (_instance == null) {
-      _instance = AuthenticationService();
+      _instance = AuthenticationService(settings);
     }
     return _instance;
   }
 
-  AuthenticationService() {
+  AuthenticationService(UserSettingsModel settings) {
+    _settings = settings;
     final List<String> parts = [];
     if (_settings.unsecuredTransport) {
       parts.add('http:/');

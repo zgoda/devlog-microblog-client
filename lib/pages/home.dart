@@ -1,7 +1,5 @@
 import 'package:devlog_microblog_client/extensions.dart';
 import 'package:devlog_microblog_client/models/posts.dart';
-import 'package:devlog_microblog_client/models/userprefs.dart';
-import 'package:devlog_microblog_client/servicelocator.dart';
 import 'package:devlog_microblog_client/services/auth.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/services/post.dart';
@@ -10,45 +8,42 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomeScreen extends HookWidget {
-  final _future = locator.allReady();
   @override
   Widget build(BuildContext context) {
-    useMemoized(() async {
-      await _future;
-      UserSettingsModel settings = locator<LocalStorageService>().settings;
-      if (!settings.isConfigured()) {
-        await _askForSettingsDialog(context);
-      }
-    });
-    return FutureBuilder(
-      future: _future,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          return Scaffold(
-            resizeToAvoidBottomInset: true,
-            floatingActionButton: FloatingActionButton(
-              tooltip: 'Create new post',
-              child: Icon(Icons.add),
-              onPressed: () => Navigator.of(context).pushNamed('/post'),
-            ),
-            appBar: AppBar(
-              title: Text('Devlog Microblog Client'),
-              actions: [
-                IconButton(
-                  icon: Icon(Icons.more_vert),
-                  onPressed: () => Navigator.of(context).pushNamed('/settings'),
-                ),
-              ],
-            ),
-            body: MicroblogEntryList(),
-          );
-        } else {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+    final settingsData = useProvider(settingsProvider);
+    Widget result;
+    settingsData.when(
+      data: (settings) {
+        if (!settings.isConfigured()) {
+          Future.delayed(Duration.zero, () => _askForSettingsDialog(context));
         }
+        result = Scaffold(
+          resizeToAvoidBottomInset: true,
+          floatingActionButton: FloatingActionButton(
+            tooltip: 'Create new post',
+            child: Icon(Icons.add),
+            onPressed: () => Navigator.of(context).pushNamed('/post'),
+          ),
+          appBar: AppBar(
+            title: Text('Devlog Microblog Client'),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.more_vert),
+                onPressed: () => Navigator.of(context).pushNamed('/settings'),
+              ),
+            ],
+          ),
+          body: MicroblogEntryList(),
+        );
       },
+      loading: () => result = Center(
+        child: CircularProgressIndicator(),
+      ),
+      error: (err, stack) => result = Center(
+        child: Text(err),
+      ),
     );
+    return result;
   }
 
   Future<void> _askForSettingsDialog(BuildContext ctx) async {
@@ -125,36 +120,49 @@ class MicroblogEntryItem extends StatelessWidget {
 
 class MicroblogEntryList extends HookWidget {
   MicroblogEntryList({Key key}) : super(key: key);
-  final _future = locator.allReady();
 
   @override
   Widget build(BuildContext context) {
-    useMemoized(() async {
-      await _future;
-      final settings = locator<LocalStorageService>().settings;
-      final auth = locator<AuthenticationService>();
-      final postService = locator<PostCollectionService>();
-      if (settings.isConfigured()) {
-        if (settings.hasCredentials()) {
-          await auth.login();
-          final posts = await postService.fetchCollection();
-          context.read(postListProvider).addAll(posts);
-        } else {
-          final loginFormResult =
-              await Navigator.of(context).pushNamed('/login');
-          if (loginFormResult) {
+    final settingsData = useProvider(settingsProvider);
+    final auth = useProvider(authenticationServiceProvider);
+    final postService = useProvider(postCollectionServiceProvider);
+    final postList = useProvider(postListProvider);
+    final postListModel = useProvider(postListProvider.state);
+    useMemoized(() {
+      settingsData.whenData((settings) async {
+        if (settings.isConfigured()) {
+          if (settings.hasCredentials()) {
+            await auth.login();
             final posts = await postService.fetchCollection();
-            context.read(postListProvider).addAll(posts);
+            postList.addAll(posts);
+          } else {
+            final loginFormResult =
+                await Navigator.of(context).pushNamed('/login');
+            if (loginFormResult) {
+              final posts = await postService.fetchCollection();
+              postList.addAll(posts);
+            }
           }
         }
-      }
+      });
     });
-    final postListModel = useProvider(postListProvider.state);
-    return ListView.builder(
-      padding: EdgeInsets.all(8),
-      itemBuilder: (_, int index) =>
-          MicroblogEntryItem(post: postListModel.posts[index]),
-      itemCount: postListModel.posts.length,
+    Widget result;
+    settingsData.when(
+      data: (settings) {
+        result = ListView.builder(
+          padding: EdgeInsets.all(8),
+          itemBuilder: (_, int index) =>
+              MicroblogEntryItem(post: postListModel.posts[index]),
+          itemCount: postListModel.posts.length,
+        );
+      },
+      loading: () => result = Center(
+        child: CircularProgressIndicator(),
+      ),
+      error: (err, stack) => result = Center(
+        child: Text(err),
+      ),
     );
+    return result;
   }
 }

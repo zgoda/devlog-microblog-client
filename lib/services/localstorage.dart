@@ -1,4 +1,10 @@
 import 'package:devlog_microblog_client/models/userprefs.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+final settingsProvider = FutureProvider<UserSettingsModel>((ref) async {
+  final localStorageService = await LocalStorageService.getInstance();
+  return localStorageService.settings;
+});
 
 class LocalStorageService {
   static LocalStorageService _instance;
