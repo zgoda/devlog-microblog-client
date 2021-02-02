@@ -121,8 +121,20 @@ class MicroblogEntryItem extends StatelessWidget {
 class MicroblogEntryList extends HookWidget {
   MicroblogEntryList({Key key}) : super(key: key);
 
+  Future<int> _fetchPostsPage(int curPage, PostCollectionService service,
+      PostListNotifier listModel) async {
+    final page = curPage + 1;
+    final posts = await service.fetchCollection(page: page);
+    listModel.addAll(posts);
+    if (posts.isNotEmpty) {
+      return page;
+    }
+    return curPage;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final curPage = useState(0);
     final settingsData = useProvider(settingsProvider);
     final auth = useProvider(authenticationServiceProvider);
     final postService = useProvider(postCollectionServiceProvider);
@@ -131,17 +143,16 @@ class MicroblogEntryList extends HookWidget {
     useMemoized(() {
       settingsData.whenData((settings) async {
         if (settings.isConfigured()) {
+          bool okResult;
           if (settings.hasCredentials()) {
-            await auth.login();
-            final posts = await postService.fetchCollection();
-            postList.addAll(posts);
+            okResult = await auth.login();
           } else {
-            final loginFormResult =
-                await Navigator.of(context).pushNamed('/login');
-            if (loginFormResult) {
-              final posts = await postService.fetchCollection();
-              postList.addAll(posts);
-            }
+            okResult = await Navigator.of(context).pushNamed('/login');
+          }
+          if (okResult) {
+            final newPage =
+                await _fetchPostsPage(curPage.value, postService, postList);
+            curPage.value = newPage;
           }
         }
       });
