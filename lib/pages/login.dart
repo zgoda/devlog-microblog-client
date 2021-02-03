@@ -40,7 +40,7 @@ class LoginScreen extends HookWidget {
               settings.setCredentials(
                   userNameController.text, passwordController.text);
               final loginResult = await auth.login();
-              if (loginResult) {
+              if (loginResult == AuthResult.ok) {
                 settings.save();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(

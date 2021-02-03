@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
@@ -13,6 +14,13 @@ final authenticationServiceProvider = Provider<AuthenticationService>((ref) {
   );
   return service;
 });
+
+enum AuthResult {
+  none,
+  ok,
+  networkError,
+  clientError,
+}
 
 class AuthenticationService {
   static AuthenticationService _instance;
@@ -52,19 +60,23 @@ class AuthenticationService {
   bool hasCredentials() => ![_userName, _password].contains(null);
   bool isLoggedIn() => !['', null].contains(_token);
 
-  Future<bool> login() async {
+  Future<AuthResult> login() async {
     final data = {
       'name': _settings.username,
       'password': _settings.password,
     };
-    final resp = await http.post(_url, body: data);
-    if (resp.statusCode == 200) {
-      final Map<String, dynamic> respData = jsonDecode(resp.body);
-      _token = respData['token'];
-      return true;
-    }
     _token = '';
-    return false;
+    try {
+      final resp = await http.post(_url, body: data);
+      if (resp.statusCode == 200) {
+        final Map<String, dynamic> respData = jsonDecode(resp.body);
+        _token = respData['token'];
+        return AuthResult.ok;
+      }
+      return AuthResult.clientError;
+    } on SocketException {
+      return AuthResult.networkError;
+    }
   }
 
   void setCredentials(String userName, String password) {
