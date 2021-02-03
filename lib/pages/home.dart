@@ -1,10 +1,10 @@
-import 'package:devlog_microblog_client/extensions.dart';
 import 'package:devlog_microblog_client/models/posts.dart';
 import 'package:devlog_microblog_client/services/auth.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/services/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomeScreen extends HookWidget {
@@ -78,41 +78,50 @@ class MicroblogEntryItem extends StatelessWidget {
     final dayStr = post.date.day.toString().padLeft(2, '0');
     final mthStr = post.date.month.toString().padLeft(2, '0');
     final dateFormatted = '$dayStr.$mthStr';
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: EdgeInsets.only(right: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  dateFormatted,
-                  style: Theme.of(context).textTheme.headline6,
-                ),
-                Text(
-                  post.date.year.toString(),
-                  style: Theme.of(context).textTheme.headline5,
-                )
-              ],
+    return InkWell(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(right: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    dateFormatted,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  Text(
+                    post.date.year.toString(),
+                    style: Theme.of(context).textTheme.headline5,
+                  )
+                ],
+              ),
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                post.title ?? '',
-                style: Theme.of(context).textTheme.headline6,
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    post.title ?? '',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 5),
+                    child: Html(
+                      data: post.textHtml,
+                    ),
+                  ),
+                ],
               ),
-              Container(
-                margin: EdgeInsets.only(top: 5),
-                child: Text(post.text.truncateTo(30)),
-              ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
+      ),
+      onTap: () => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(post.text)),
       ),
     );
   }

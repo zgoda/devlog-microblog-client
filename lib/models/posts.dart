@@ -19,14 +19,16 @@ final postListProvider = StateNotifierProvider((ref) => PostListNotifier());
 class Post {
   String title;
   String text;
+  String textHtml;
   DateTime date;
   int postId;
 
-  Post({this.postId, this.title, this.text, this.date});
+  Post({this.postId, this.title, this.text, this.textHtml, this.date});
 
   Post.fromJson(Map<String, dynamic> json) {
     title = json['title'];
     text = json['text'];
+    textHtml = json['text_html'];
     date = DateTime.parse(json['created']);
     postId = json['pk'];
   }
