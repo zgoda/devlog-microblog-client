@@ -9,10 +9,11 @@ class LoginScreen extends HookWidget {
   Widget build(BuildContext context) {
     final settingsData = useProvider(settingsProvider);
     final auth = useProvider(authenticationServiceProvider);
+    final userNameController = useTextEditingController();
+    final passwordController = useTextEditingController();
     Widget result;
     settingsData.when(
       data: (settings) {
-        final userNameController = useTextEditingController();
         final userNameField = TextField(
           controller: userNameController,
           obscureText: false,
@@ -21,7 +22,6 @@ class LoginScreen extends HookWidget {
             contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           ),
         );
-        final passwordController = useTextEditingController();
         final passwordField = TextField(
           controller: passwordController,
           obscureText: true,
