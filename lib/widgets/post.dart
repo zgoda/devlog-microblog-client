@@ -58,9 +58,8 @@ class MicroblogEntryItem extends StatelessWidget {
           ],
         ),
       ),
-      onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(post.text)),
-      ),
+      onTap: () =>
+          Navigator.of(context).pushNamed('/post/edit', arguments: post),
     );
   }
 }

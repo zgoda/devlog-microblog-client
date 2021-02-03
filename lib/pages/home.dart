@@ -19,7 +19,7 @@ class HomeScreen extends HookWidget {
           floatingActionButton: FloatingActionButton(
             tooltip: 'Create new post',
             child: Icon(Icons.add),
-            onPressed: () => Navigator.of(context).pushNamed('/post'),
+            onPressed: () => Navigator.of(context).pushNamed('/post/new'),
           ),
           appBar: AppBar(
             title: Text('Devlog Microblog Client'),
@@ -49,12 +49,11 @@ class HomeScreen extends HookWidget {
       builder: (_) => AlertDialog(
         title: Text('Application not configured'),
         content: Text(
-            'Application is not configured yet, do you want to open settings page?'),
+          'Application is not configured yet, do you want to open settings page?',
+        ),
         actions: <Widget>[
           FlatButton(
-            onPressed: () {
-              Navigator.of(ctx).pop(true);
-            },
+            onPressed: () => Navigator.of(ctx).pop(true),
             child: Text('Yes'),
           ),
         ],

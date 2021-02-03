@@ -8,16 +8,17 @@ class SettingsScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final host = useState('');
-    final hostController = useTextEditingController(text: '');
-    final defaultAuthor = useState('');
-    final defaultAuthorController = useTextEditingController(text: '');
-    final unsecuredTransport = useState(false);
-    final modeOffline = useState(false);
-    final storeCredentials = useState(true);
     final settingsData = useProvider(settingsProvider);
     return settingsData.when(
       data: (settings) {
+        final host = useState(settings.host);
+        final hostController = useTextEditingController(text: settings.host);
+        final defaultAuthor = useState(settings.defaultAuthor);
+        final defaultAuthorController =
+            useTextEditingController(text: settings.defaultAuthor);
+        final unsecuredTransport = useState(settings.unsecuredTransport);
+        final modeOffline = useState(settings.modeOffline);
+        final storeCredentials = useState(settings.storeCredentials);
         return Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(

@@ -1,6 +1,7 @@
 import 'package:devlog_microblog_client/pages/home.dart';
 import 'package:devlog_microblog_client/pages/login.dart';
-import 'package:devlog_microblog_client/pages/post.dart';
+import 'package:devlog_microblog_client/pages/edit_post.dart';
+import 'package:devlog_microblog_client/pages/new_post.dart';
 import 'package:devlog_microblog_client/pages/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -23,7 +24,8 @@ class MicroblogApp extends StatelessWidget {
       title: 'Devlog Microblog Client',
       home: HomeScreen(),
       routes: <String, WidgetBuilder>{
-        '/post': (BuildContext context) => PostEditScreen(),
+        '/post/edit': (BuildContext context) => PostEditScreen(),
+        '/post/new': (BuildContext context) => PostCreateScreen(),
         '/settings': (BuildContext context) => SettingsScreen(),
         '/login': (BuildContext context) => LoginScreen(),
       },
