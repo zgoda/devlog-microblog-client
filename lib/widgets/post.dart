@@ -4,6 +4,7 @@ import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/services/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MicroblogEntryItem extends StatelessWidget {
@@ -15,6 +16,7 @@ class MicroblogEntryItem extends StatelessWidget {
     final dayStr = post.date.day.toString().padLeft(2, '0');
     final mthStr = post.date.month.toString().padLeft(2, '0');
     final dateFormatted = '$dayStr.$mthStr';
+    final h6 = Theme.of(context).textTheme.headline6;
     return InkWell(
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
@@ -28,29 +30,26 @@ class MicroblogEntryItem extends StatelessWidget {
                 children: [
                   Text(
                     dateFormatted,
-                    style: Theme.of(context).textTheme.headline6,
+                    style: h6,
                   ),
                   Text(
                     post.date.year.toString(),
-                    style: Theme.of(context).textTheme.headline5,
+                    style: h6,
                   )
                 ],
               ),
             ),
-            Flexible(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    post.title ?? '',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 5),
-                    child: Text(post.textHtml),
-                  ),
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  post.title ?? '',
+                  style: h6,
+                ),
+                MarkdownBody(
+                  data: post.text,
+                ),
+              ],
             ),
           ],
         ),

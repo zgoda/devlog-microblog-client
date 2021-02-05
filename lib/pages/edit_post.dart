@@ -1,5 +1,6 @@
 import 'package:devlog_microblog_client/models/posts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class PostEditScreen extends StatelessWidget {
   @override
@@ -11,7 +12,9 @@ class PostEditScreen extends StatelessWidget {
         title: Text('Single post'),
       ),
       body: Center(
-        child: Text(post.text),
+        child: Markdown(
+          data: post.text,
+        ),
       ),
     );
   }
