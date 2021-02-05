@@ -164,7 +164,7 @@ packages:
       name: flutter_riverpod
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.3"
+    version: "0.12.3+1"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -207,7 +207,7 @@ packages:
       name: hooks_riverpod
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.3"
+    version: "0.12.3+1"
   html:
     dependency: transitive
     description:
@@ -410,7 +410,7 @@ packages:
       name: shared_preferences_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.2+2"
+    version: "0.0.2+3"
   sky_engine:
     dependency: transitive
     description: flutter
