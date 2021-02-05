@@ -52,7 +52,7 @@ class HomeScreen extends HookWidget {
           'Application is not configured yet, do you want to open settings page?',
         ),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
             child: Text('Yes'),
           ),
