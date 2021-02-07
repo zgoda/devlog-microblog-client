@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
+import 'package:devlog_microblog_client/utils/web.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,7 +27,7 @@ class AuthenticationService {
   static AuthenticationService _instance;
   String _userName;
   String _password;
-  String _url;
+  Uri _url;
   String _token;
 
   UserSettingsModel _settings;
@@ -40,14 +41,8 @@ class AuthenticationService {
 
   AuthenticationService(UserSettingsModel settings) {
     _settings = settings;
-    final List<String> parts = [];
-    if (_settings.unsecuredTransport) {
-      parts.add('http:/');
-    } else {
-      parts.add('https:/');
-    }
-    parts.addAll([_settings.host, 'api/v1/login']);
-    _url = parts.join('/');
+    _url = buildServerUrl(_settings.host, '/api/v1/login',
+        secure: !_settings.unsecuredTransport);
   }
 
   Map<String, String> authHeader() {

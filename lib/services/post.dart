@@ -4,6 +4,7 @@ import 'package:devlog_microblog_client/models/posts.dart';
 import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/auth.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
+import 'package:devlog_microblog_client/utils/web.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,7 +18,7 @@ final postCollectionServiceProvider = Provider<PostCollectionService>((ref) {
 });
 
 class PostCollectionService {
-  String _collectionUrl;
+  Uri _collectionUrl;
   int _currentPage = 1;
 
   AuthenticationService _auth;
@@ -25,20 +26,14 @@ class PostCollectionService {
   PostCollectionService(
       UserSettingsModel settings, AuthenticationService auth) {
     _auth = auth;
-    final List<String> parts = [];
-    if (settings.unsecuredTransport) {
-      parts.add('http:/');
-    } else {
-      parts.add('https:/');
-    }
-    parts.addAll([settings.host, 'api/v1']);
-    final root = parts.join('/');
-    _collectionUrl = root + '/quips';
+    _collectionUrl = buildServerUrl(settings.host, '/api/v1/quips',
+        secure: !settings.unsecuredTransport);
   }
 
   Future<List<Post>> fetchCollection({int page: 1}) async {
     _currentPage = page;
-    final url = '$_collectionUrl?p=$_currentPage';
+    final url =
+        _collectionUrl.replace(queryParameters: {'p': _currentPage.toString()});
     if (!_auth.isLoggedIn()) {
       await _auth.login();
     }

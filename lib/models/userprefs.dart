@@ -18,6 +18,22 @@ class UserSettingsModel {
     this.defaultAuthor,
   );
 
+  UserSettingsModel.empty() {
+    unsecuredTransport = false;
+    storeCredentials = true;
+    modeOffline = false;
+  }
+
+  UserSettingsModel.copyFrom(UserSettingsModel other) {
+    unsecuredTransport = other.unsecuredTransport;
+    storeCredentials = other.storeCredentials;
+    modeOffline = other.modeOffline;
+    host = other.host;
+    defaultAuthor = other.defaultAuthor;
+    username = other.username;
+    password = other.password;
+  }
+
   static Future<UserSettingsModel> load() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final unsecuredTransport = prefs.getBool('unsecuredTransport') ?? false;
