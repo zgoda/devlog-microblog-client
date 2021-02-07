@@ -24,4 +24,10 @@ class UserPreferencesNotifier extends StateNotifier<UserSettingsModel> {
     newPrefs.host = host;
     state = newPrefs;
   }
+
+  void setUnsecuredTransport(bool unsecuredTransport) {
+    final newPrefs = UserSettingsModel.copyFrom(state);
+    newPrefs.unsecuredTransport = unsecuredTransport;
+    state = newPrefs;
+  }
 }
