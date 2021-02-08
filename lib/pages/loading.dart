@@ -1,3 +1,4 @@
+import 'package:devlog_microblog_client/pages/home.dart';
 import 'package:devlog_microblog_client/services/auth.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   Future<bool> _init() async {
     final localStorage = await LocalStorageService.getInstance();
+    print('loaded settings');
     await AuthenticationService.getInstance(localStorage.settings);
+    print('loaded auth');
     return true;
   }
 
@@ -31,7 +34,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         if (snapshot.hasData) {
           if (snapshot.data) {
-            Navigator.of(context).pushNamed('/home');
+            return HomeScreen();
           }
         }
         return Scaffold(

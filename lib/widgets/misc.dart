@@ -7,7 +7,7 @@ class ServerStatusIcon extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final serverStatus = useProvider(serverStatusProvider);
-    return serverStatusIcon(serverStatus.state);
+    return serverStatusIcon(serverStatus);
   }
 }
 

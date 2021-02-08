@@ -2,18 +2,16 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:devlog_microblog_client/models/userprefs.dart';
-import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/utils/web.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-final serverStatusProvider = StateProvider<ServerStatus>((ref) {
-  return ref.watch(serverStatusServiceProvider.state);
+final serverStatusProvider = Provider<ServerStatus>((ref) {
+  return ref.watch(serverStatusServiceProvider).state.status;
 });
 
 final serverStatusServiceProvider =
-    StateNotifierProvider<ServerStatusServiceNotifier>(
-        (ref) => ServerStatusServiceNotifier());
+    StateProvider<ServerStatusService>((ref) => ServerStatusService());
 
 enum ServerStatus {
   OFFLINE,
@@ -32,16 +30,18 @@ class ServerStatusService {
   Timer _timer;
   ServerStatus status = ServerStatus.OFFLINE;
 
-  ServerStatusService(UserSettingsModel settings) {
-    _settings = settings;
+  ServerStatusService() {
     _http = http.Client();
+  }
+
+  void startWhenReady(Future<UserSettingsModel> future) async {
+    _settings = await future;
     start();
   }
 
   void start() {
     _url = buildServerUrl(_settings.host, '/api/v1/login',
         secure: !_settings.unsecuredTransport);
-    _checkStatus();
     _timer = Timer.periodic(_interval, (timer) async {
       await _checkStatus();
     });
@@ -67,31 +67,10 @@ class ServerStatusService {
     }
   }
 
-  static ServerStatusService getInstance(UserSettingsModel settings) {
+  static ServerStatusService getInstance() {
     if (_instance == null) {
-      _instance = ServerStatusService(settings);
+      _instance = ServerStatusService();
     }
     return _instance;
-  }
-}
-
-class ServerStatusServiceNotifier extends StateNotifier<ServerStatus> {
-  ServerStatusServiceNotifier()
-      : super(ServerStatusService(UserSettingsModel.empty()).status) {
-    _init();
-  }
-
-  ServerStatus getStatus() {
-    return state;
-  }
-
-  void setStatus(ServerStatus status) {
-    state = status;
-  }
-
-  void _init() async {
-    final storage = await LocalStorageService.getInstance();
-    final service = ServerStatusService.getInstance(storage.settings);
-    state = service.status;
   }
 }

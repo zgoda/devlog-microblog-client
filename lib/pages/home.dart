@@ -1,4 +1,6 @@
+import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
+import 'package:devlog_microblog_client/services/serverstatus.dart';
 import 'package:devlog_microblog_client/widgets/misc.dart';
 import 'package:devlog_microblog_client/widgets/post.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomeScreen extends HookWidget {
+  HomeScreen({Key key}) : super(key: key) {
+    ServerStatusService.getInstance().startWhenReady(UserSettingsModel.load());
+  }
+
   @override
   Widget build(BuildContext context) {
     final settingsData = useProvider(settingsProvider);
