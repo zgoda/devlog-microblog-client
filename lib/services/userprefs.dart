@@ -1,4 +1,5 @@
 import 'package:devlog_microblog_client/models/userprefs.dart';
+import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final userPreferencesProvider =
@@ -10,7 +11,12 @@ class UserPreferencesNotifier extends StateNotifier<UserSettingsModel> {
   }
 
   void _init() async {
-    state = await UserSettingsModel.load();
+    final storage = await LocalStorageService.getInstance();
+    state = storage.settings;
+  }
+
+  UserSettingsModel getSettings() {
+    return state;
   }
 
   void setCredentials(String name, String password) {

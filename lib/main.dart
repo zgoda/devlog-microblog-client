@@ -1,4 +1,5 @@
 import 'package:devlog_microblog_client/pages/home.dart';
+import 'package:devlog_microblog_client/pages/loading.dart';
 import 'package:devlog_microblog_client/pages/login.dart';
 import 'package:devlog_microblog_client/pages/edit_post.dart';
 import 'package:devlog_microblog_client/pages/new_post.dart';
@@ -22,12 +23,13 @@ class MicroblogApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Devlog Microblog Client',
-      home: HomeScreen(),
+      home: LoadingScreen(),
       routes: <String, WidgetBuilder>{
         '/post/edit': (BuildContext context) => PostEditScreen(),
         '/post/new': (BuildContext context) => PostCreateScreen(),
         '/settings': (BuildContext context) => SettingsScreen(),
         '/login': (BuildContext context) => LoginScreen(),
+        '/home': (BuildContext context) => HomeScreen(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,

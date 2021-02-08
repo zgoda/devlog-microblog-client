@@ -8,18 +8,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 final serverStatusProvider = StateProvider<ServerStatus>((ref) {
-  ServerStatus status = ServerStatus.OFFLINE;
-  ref
-      .watch(serverStatusServiceProvider.future)
-      .then((service) => status = service.status);
-  return status;
+  return ref.watch(serverStatusServiceProvider.state);
 });
 
 final serverStatusServiceProvider =
-    FutureProvider<ServerStatusService>((ref) async {
-  final settings = await ref.watch(settingsProvider.future);
-  return ServerStatusService.getInstance(settings);
-});
+    StateNotifierProvider<ServerStatusServiceNotifier>(
+        (ref) => ServerStatusServiceNotifier());
 
 enum ServerStatus {
   OFFLINE,
@@ -58,6 +52,9 @@ class ServerStatusService {
   }
 
   Future<void> _checkStatus() async {
+    if (!_settings.isConfigured()) {
+      return;
+    }
     try {
       final resp = await _http.head(_url);
       if (resp.statusCode == 200) {
@@ -70,10 +67,31 @@ class ServerStatusService {
     }
   }
 
-  static getInstance(UserSettingsModel settings) {
+  static ServerStatusService getInstance(UserSettingsModel settings) {
     if (_instance == null) {
       _instance = ServerStatusService(settings);
     }
     return _instance;
+  }
+}
+
+class ServerStatusServiceNotifier extends StateNotifier<ServerStatus> {
+  ServerStatusServiceNotifier()
+      : super(ServerStatusService(UserSettingsModel.empty()).status) {
+    _init();
+  }
+
+  ServerStatus getStatus() {
+    return state;
+  }
+
+  void setStatus(ServerStatus status) {
+    state = status;
+  }
+
+  void _init() async {
+    final storage = await LocalStorageService.getInstance();
+    final service = ServerStatusService.getInstance(storage.settings);
+    state = service.status;
   }
 }
