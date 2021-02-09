@@ -2,16 +2,20 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:devlog_microblog_client/models/userprefs.dart';
+import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/utils/web.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 final serverStatusProvider = Provider<ServerStatus>((ref) {
-  return ref.watch(serverStatusServiceProvider).state.status;
+  final service = ref.watch(serverStatusServiceProvider);
+  return service.status;
 });
 
-final serverStatusServiceProvider =
-    StateProvider<ServerStatusService>((ref) => ServerStatusService());
+final serverStatusServiceProvider = Provider<ServerStatusService>((ref) {
+  final prefs = ref.watch(userPrefsProvider.state);
+  return ServerStatusService.getInstance(prefs);
+});
 
 enum ServerStatus {
   OFFLINE,
@@ -21,27 +25,25 @@ enum ServerStatus {
 
 class ServerStatusService {
   static ServerStatusService _instance;
-  Uri _url;
 
-  UserSettingsModel _settings;
-  http.Client _http;
+  Uri _url;
+  final _http = http.Client();
+
+  static const ENDPOINT = 'login';
 
   final Duration _interval = Duration(seconds: 15);
   Timer _timer;
   ServerStatus status = ServerStatus.OFFLINE;
 
-  ServerStatusService() {
-    _http = http.Client();
-  }
-
-  void startWhenReady(Future<UserSettingsModel> future) async {
-    _settings = await future;
-    start();
+  ServerStatusService(UserSettingsModel prefs) {
+    _url = buildServerUrl(
+      prefs.host,
+      buildEndpointPath(ENDPOINT),
+      secure: !prefs.unsecuredTransport,
+    );
   }
 
   void start() {
-    _url = buildServerUrl(_settings.host, '/api/v1/login',
-        secure: !_settings.unsecuredTransport);
     _timer = Timer.periodic(_interval, (timer) async {
       await _checkStatus();
     });
@@ -52,9 +54,6 @@ class ServerStatusService {
   }
 
   Future<void> _checkStatus() async {
-    if (!_settings.isConfigured()) {
-      return;
-    }
     try {
       final resp = await _http.head(_url);
       if (resp.statusCode == 200) {
@@ -67,9 +66,9 @@ class ServerStatusService {
     }
   }
 
-  static ServerStatusService getInstance() {
+  static ServerStatusService getInstance(UserSettingsModel prefs) {
     if (_instance == null) {
-      _instance = ServerStatusService();
+      _instance = ServerStatusService(prefs);
     }
     return _instance;
   }
