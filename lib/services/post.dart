@@ -3,18 +3,26 @@ import 'dart:convert';
 import 'package:devlog_microblog_client/models/post.dart';
 import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/auth.dart';
+import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/utils/web.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-final postCollectionServiceProvider =
-    Provider<PostService>((ref) => PostService.getInstance());
+final postCollectionServiceProvider = Provider<PostService>((ref) {
+  final prefs = ref.watch(userPrefsProvider.state);
+  final auth = ref.watch(authenticationServiceProvider);
+  final service = PostService.getInstance();
+  service.init(prefs, auth);
+  return service;
+});
 
 class PostService {
   static PostService _instance;
   Uri _collectionUrl;
   var _currentPage = 1;
   final _http = http.Client();
+
+  static const ENDPOINT = 'quips';
 
   AuthenticationService _auth;
 
@@ -28,7 +36,7 @@ class PostService {
   void init(UserSettingsModel prefs, AuthenticationService auth) {
     _collectionUrl = buildServerUrl(
       prefs.host,
-      '/api/v1/quips',
+      buildEndpointPath(ENDPOINT),
       secure: !prefs.unsecuredTransport,
     );
     _auth = auth;
@@ -38,7 +46,7 @@ class PostService {
     _currentPage = page;
     final url =
         _collectionUrl.replace(queryParameters: {'p': _currentPage.toString()});
-    if (!_auth.isLoggedIn()) {
+    if (!_auth.hasToken()) {
       await _auth.login();
     }
     Map<String, String> headers = _auth.authHeader();

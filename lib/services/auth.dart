@@ -7,13 +7,14 @@ import 'package:devlog_microblog_client/utils/web.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
+final authTokenProvider = Provider<String>((ref) {
+  final service = ref.watch(authenticationServiceProvider);
+  return service.token;
+});
+
 final authenticationServiceProvider = Provider<AuthenticationService>((ref) {
-  final settingsData = ref.watch(settingsProvider);
-  AuthenticationService service;
-  settingsData.whenData(
-    (settings) => service = AuthenticationService.getInstance(settings),
-  );
-  return service;
+  final prefs = ref.watch(userPrefsProvider.state);
+  return AuthenticationService.getInstance(prefs);
 });
 
 enum AuthResult {
@@ -30,7 +31,7 @@ class AuthenticationService {
   Uri _url;
   String _token;
 
-  UserSettingsModel _settings;
+  static const ENDPOINT = 'login';
 
   static getInstance(UserSettingsModel settings) {
     if (_instance == null) {
@@ -40,9 +41,13 @@ class AuthenticationService {
   }
 
   AuthenticationService(UserSettingsModel settings) {
-    _settings = settings;
-    _url = buildServerUrl(_settings.host, '/api/v1/login',
-        secure: !_settings.unsecuredTransport);
+    _userName = settings.username;
+    _password = settings.password;
+    _url = buildServerUrl(
+      settings.host,
+      buildEndpointPath(ENDPOINT),
+      secure: !settings.unsecuredTransport,
+    );
   }
 
   Map<String, String> authHeader() {
@@ -53,12 +58,12 @@ class AuthenticationService {
   }
 
   bool hasCredentials() => ![_userName, _password].contains(null);
-  bool isLoggedIn() => !['', null].contains(_token);
+  bool hasToken() => !['', null].contains(_token);
 
   Future<AuthResult> login() async {
     final data = {
-      'name': _settings.username,
-      'password': _settings.password,
+      'name': _userName,
+      'password': _password,
     };
     _token = '';
     try {
@@ -74,8 +79,7 @@ class AuthenticationService {
     }
   }
 
-  void setCredentials(String userName, String password) {
-    _userName = userName;
-    _password = password;
+  String get token {
+    return _token;
   }
 }
