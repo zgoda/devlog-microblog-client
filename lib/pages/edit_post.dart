@@ -1,4 +1,4 @@
-import 'package:devlog_microblog_client/models/posts.dart';
+import 'package:devlog_microblog_client/models/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 

@@ -23,6 +23,15 @@ class SettingsScreen extends HookWidget {
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
             title: Text('Application settings'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  settings.save();
+                  Navigator.of(context).pop();
+                },
+                child: Text('Save'),
+              ),
+            ],
           ),
           body: Column(
             children: <Widget>[
@@ -75,14 +84,6 @@ class SettingsScreen extends HookWidget {
                 onChanged: (value) {
                   storeCredentials.value = value;
                   settings.storeCredentials = value;
-                },
-              ),
-              SizedBox(height: 25),
-              ElevatedButton(
-                child: Text('Save'),
-                onPressed: () {
-                  settings.save();
-                  Navigator.of(context).pop();
                 },
               ),
             ],

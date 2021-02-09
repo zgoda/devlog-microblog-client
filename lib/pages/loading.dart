@@ -11,7 +11,7 @@ class LoadingScreen extends StatefulWidget {
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
-  Future _future;
+  Future<bool> _future;
 
   @override
   void initState() {
@@ -21,9 +21,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   Future<bool> _init() async {
     final localStorage = await LocalStorageService.getInstance();
-    print('loaded settings');
     await AuthenticationService.getInstance(localStorage.settings);
-    print('loaded auth');
     return true;
   }
 
@@ -32,10 +30,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
     return FutureBuilder<bool>(
       future: _future,
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data) {
-            return HomeScreen();
-          }
+        if (snapshot.hasData && snapshot.data) {
+          return HomeScreen();
         }
         return Scaffold(
           body: Center(

@@ -1,4 +1,4 @@
-import 'package:devlog_microblog_client/models/posts.dart';
+import 'package:devlog_microblog_client/models/post.dart';
 import 'package:devlog_microblog_client/services/auth.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/services/post.dart';
@@ -13,8 +13,8 @@ class MicroblogEntryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dayStr = post.date.day.toString().padLeft(2, '0');
-    final mthStr = post.date.month.toString().padLeft(2, '0');
+    final dayStr = post.created.day.toString().padLeft(2, '0');
+    final mthStr = post.created.month.toString().padLeft(2, '0');
     final dateFormatted = '$dayStr.$mthStr';
     final h6 = Theme.of(context).textTheme.headline6;
     return InkWell(
@@ -33,7 +33,7 @@ class MicroblogEntryItem extends StatelessWidget {
                     style: h6,
                   ),
                   Text(
-                    post.date.year.toString(),
+                    post.created.year.toString(),
                     style: h6,
                   )
                 ],
@@ -63,8 +63,8 @@ class MicroblogEntryItem extends StatelessWidget {
 class MicroblogEntryList extends HookWidget {
   MicroblogEntryList({Key key}) : super(key: key);
 
-  Future<int> _fetchPostsPage(int curPage, PostCollectionService service,
-      PostListNotifier listModel) async {
+  Future<int> _fetchPostsPage(
+      int curPage, PostService service, PostListNotifier listModel) async {
     final page = curPage + 1;
     final posts = await service.fetchCollection(page: page);
     listModel.addAll(posts);
@@ -105,8 +105,8 @@ class MicroblogEntryList extends HookWidget {
         result = ListView.builder(
           padding: EdgeInsets.all(8),
           itemBuilder: (_, int index) =>
-              MicroblogEntryItem(post: postListModel.posts[index]),
-          itemCount: postListModel.posts.length,
+              MicroblogEntryItem(post: postListModel[index]),
+          itemCount: postListModel.length,
         );
       },
       loading: () => result = Center(

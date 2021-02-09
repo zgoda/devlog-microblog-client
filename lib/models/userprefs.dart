@@ -34,6 +34,31 @@ class UserSettingsModel {
     password = other.password;
   }
 
+  static Future<UserSettingsModel> whenReady(
+      Future<SharedPreferences> future) async {
+    final prefs = await future;
+    final unsecuredTransport = prefs.getBool('unsecuredTransport') ?? false;
+    final storeCredentials = prefs.getBool('storeCredentials') ?? true;
+    final modeOffline = prefs.getBool('modeOffline') ?? false;
+    final host = prefs.getString('host');
+    final defaultAuthor = prefs.getString('defaultAuthor');
+    final model = UserSettingsModel(
+      unsecuredTransport,
+      storeCredentials,
+      modeOffline,
+      host,
+      defaultAuthor,
+    );
+    final FlutterSecureStorage securePrefs = FlutterSecureStorage();
+    try {
+      model.username = await securePrefs.read(key: 'username');
+      model.password = await securePrefs.read(key: 'password');
+    } catch (e) {
+      securePrefs.deleteAll();
+    }
+    return model;
+  }
+
   static Future<UserSettingsModel> load() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final unsecuredTransport = prefs.getBool('unsecuredTransport') ?? false;
