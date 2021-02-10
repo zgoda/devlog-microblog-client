@@ -18,7 +18,6 @@ class HomeScreen extends HookWidget {
           Future.delayed(Duration.zero, () => _askForSettingsDialog(context));
         }
         result = Scaffold(
-          resizeToAvoidBottomInset: true,
           floatingActionButton: FloatingActionButton(
             tooltip: 'Create new post',
             child: Icon(Icons.add),

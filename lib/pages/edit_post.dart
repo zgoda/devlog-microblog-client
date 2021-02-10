@@ -7,7 +7,6 @@ class PostEditScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final Post post = ModalRoute.of(context).settings.arguments;
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text('Single post'),
       ),

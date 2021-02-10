@@ -34,7 +34,6 @@ class SettingsScreen extends HookWidget {
       (value) => storeCredentials.value = value,
     );
     return Scaffold(
-      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text('Application settings'),
         actions: <Widget>[
@@ -56,31 +55,33 @@ class SettingsScreen extends HookWidget {
           ),
         ],
       ),
-      body: Column(
-        children: <Widget>[
-          SizedBox(height: 15),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: 'Host',
-              hintText: 'Host name or IP address',
-              contentPadding: EdgeInsets.all(10),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            SizedBox(height: 15),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Host',
+                hintText: 'Host name or IP address',
+                contentPadding: EdgeInsets.all(10),
+              ),
+              controller: hostController,
             ),
-            controller: hostController,
-          ),
-          SizedBox(height: 25),
-          TextFormField(
-            decoration: InputDecoration(
-              labelText: 'Author',
-              hintText: 'Default post author',
-              contentPadding: EdgeInsets.all(10),
+            SizedBox(height: 25),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Author',
+                hintText: 'Default post author',
+                contentPadding: EdgeInsets.all(10),
+              ),
+              controller: defaultAuthorController,
             ),
-            controller: defaultAuthorController,
-          ),
-          SizedBox(height: 25),
-          unsecuredTransportSwitch,
-          modeOfflineSwitch,
-          storeCredentialsSwitch,
-        ],
+            SizedBox(height: 25),
+            unsecuredTransportSwitch,
+            modeOfflineSwitch,
+            storeCredentialsSwitch,
+          ],
+        ),
       ),
     );
   }
