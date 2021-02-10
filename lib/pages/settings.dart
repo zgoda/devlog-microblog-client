@@ -66,6 +66,7 @@ class SettingsScreen extends HookWidget {
                 contentPadding: EdgeInsets.all(10),
               ),
               controller: hostController,
+              autofocus: true,
             ),
             SizedBox(height: 25),
             TextFormField(

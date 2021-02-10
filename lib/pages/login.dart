@@ -15,6 +15,7 @@ class LoginScreen extends HookWidget {
     settingsData.when(
       data: (settings) {
         final userNameField = TextField(
+          autofocus: true,
           controller: userNameController,
           obscureText: false,
           decoration: InputDecoration(
@@ -63,21 +64,24 @@ class LoginScreen extends HookWidget {
           ),
         );
         result = Scaffold(
-          body: Center(
-            child: Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(36),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    userNameField,
-                    SizedBox(height: 25),
-                    passwordField,
-                    SizedBox(height: 35),
-                    loginButton,
-                  ],
+          resizeToAvoidBottomInset: false,
+          body: SingleChildScrollView(
+            child: Center(
+              child: Container(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(36),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      userNameField,
+                      SizedBox(height: 25),
+                      passwordField,
+                      SizedBox(height: 35),
+                      loginButton,
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -7,12 +7,15 @@ class PostEditScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final Post post = ModalRoute.of(context).settings.arguments;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Single post'),
       ),
-      body: Center(
-        child: Markdown(
-          data: post.text,
+      body: SingleChildScrollView(
+        child: Center(
+          child: Markdown(
+            data: post.text,
+          ),
         ),
       ),
     );
