@@ -3,14 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ServerStatusIcon extends HookWidget {
-  @override
-  Widget build(BuildContext context) {
-    final serverStatus = useProvider(serverStatusProvider);
-    return serverStatusIcon(serverStatus);
-  }
-}
-
 Icon serverStatusIcon(ServerStatus status) {
   Icon icon;
   switch (status) {
@@ -25,10 +17,26 @@ Icon serverStatusIcon(ServerStatus status) {
       break;
     case ServerStatus.ONLINE:
       icon = Icon(
-        Icons.lightbulb,
+        Icons.lightbulb_outline,
         color: Colors.green,
       );
       break;
   }
   return icon;
+}
+
+class ServerStatusIcon extends HookWidget {
+  @override
+  Widget build(BuildContext context) {
+    final serverStatus = useProvider(serverStatusProvider);
+    Widget result;
+    serverStatus.when(
+      data: (status) => result = serverStatusIcon(status),
+      loading: () => result = CircularProgressIndicator(),
+      error: (err, stack) => result = Center(
+        child: Text(err),
+      ),
+    );
+    return result;
+  }
 }

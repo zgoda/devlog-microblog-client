@@ -7,10 +7,22 @@ import 'package:devlog_microblog_client/utils/web.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-final serverStatusProvider = Provider<ServerStatus>((ref) {
+final serverStatusProvider = StreamProvider<ServerStatus>((ref) {
   final service = ref.watch(serverStatusServiceProvider);
-  return service.status;
+  return service.status();
 });
+
+class ServerStatusNotifier extends StateNotifier<ServerStatus> {
+  ServerStatusNotifier() : super(ServerStatus.OFFLINE);
+
+  void update(ServerStatus status) {
+    state = status;
+  }
+
+  ServerStatus get status {
+    return state;
+  }
+}
 
 final serverStatusServiceProvider = Provider<ServerStatusService>((ref) {
   final prefs = ref.watch(userPrefsProvider.state);
@@ -32,8 +44,7 @@ class ServerStatusService {
   static const ENDPOINT = 'login';
 
   final Duration _interval = Duration(seconds: 15);
-  Timer _timer;
-  ServerStatus status = ServerStatus.OFFLINE;
+  var _stopStream = false;
 
   ServerStatusService(UserSettingsModel prefs) {
     _url = buildServerUrl(
@@ -43,26 +54,31 @@ class ServerStatusService {
     );
   }
 
-  void start() {
-    _timer = Timer.periodic(_interval, (timer) async {
-      await _checkStatus();
-    });
-  }
-
   void stop() {
-    _timer.cancel();
+    _stopStream = true;
   }
 
-  Future<void> _checkStatus() async {
+  Stream<ServerStatus> status() async* {
+    while (true) {
+      await Future.delayed(_interval);
+      final status = await _checkStatus();
+      yield status;
+      if (_stopStream) {
+        break;
+      }
+    }
+  }
+
+  Future<ServerStatus> _checkStatus() async {
     try {
       final resp = await _http.head(_url);
       if (resp.statusCode == 200) {
-        status = ServerStatus.ONLINE;
+        return ServerStatus.ONLINE;
       } else {
-        status = ServerStatus.ERROR;
+        return ServerStatus.ERROR;
       }
     } on SocketException {
-      status = ServerStatus.OFFLINE;
+      return ServerStatus.OFFLINE;
     }
   }
 
