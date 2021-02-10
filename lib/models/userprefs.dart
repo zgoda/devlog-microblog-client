@@ -114,11 +114,8 @@ class UserSettingsModel {
     }
   }
 
-  bool hasCredentials() {
-    return storeCredentials &&
-        !['', null].contains(username) &&
-        !['', null].contains(password);
-  }
+  bool hasCredentials() =>
+      !['', null].contains(username) && !['', null].contains(password);
 
   bool isConfigured() {
     return ![null, ''].contains(host);

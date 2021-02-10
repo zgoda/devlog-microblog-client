@@ -77,45 +77,31 @@ class MicroblogEntryList extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final curPage = useState(0);
-    final settingsData = useProvider(settingsProvider);
+    final settings = useProvider(userPrefsProvider.state);
     final auth = useProvider(authenticationServiceProvider);
     final postService = useProvider(postCollectionServiceProvider);
     final postList = useProvider(postListProvider);
     final postListModel = useProvider(postListProvider.state);
-    useMemoized(() {
-      settingsData.whenData((settings) async {
-        if (settings.isConfigured()) {
-          bool okResult;
-          if (settings.hasCredentials()) {
-            okResult = await auth.login() == AuthResult.ok;
-          } else {
-            okResult = await Navigator.of(context).pushNamed('/login');
-          }
-          if (okResult) {
-            final newPage =
-                await _fetchPostsPage(curPage.value, postService, postList);
-            curPage.value = newPage;
-          }
+    useMemoized(() async {
+      if (settings.isConfigured()) {
+        bool okResult;
+        if (settings.hasCredentials()) {
+          okResult = await auth.login() == AuthResult.ok;
+        } else {
+          okResult = await Navigator.of(context).pushNamed('/login');
         }
-      });
+        if (okResult) {
+          final newPage =
+              await _fetchPostsPage(curPage.value, postService, postList);
+          curPage.value = newPage;
+        }
+      }
     });
-    Widget result;
-    settingsData.when(
-      data: (settings) {
-        result = ListView.builder(
-          padding: EdgeInsets.all(8),
-          itemBuilder: (_, int index) =>
-              MicroblogEntryItem(post: postListModel[index]),
-          itemCount: postListModel.length,
-        );
-      },
-      loading: () => result = Center(
-        child: CircularProgressIndicator(),
-      ),
-      error: (err, stack) => result = Center(
-        child: Text(err),
-      ),
+    return ListView.builder(
+      padding: EdgeInsets.all(8),
+      itemBuilder: (_, int index) =>
+          MicroblogEntryItem(post: postListModel[index]),
+      itemCount: postListModel.length,
     );
-    return result;
   }
 }
