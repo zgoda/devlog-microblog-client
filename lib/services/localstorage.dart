@@ -23,6 +23,7 @@ class UserPrefsNotifier extends StateNotifier<UserSettingsModel> {
 
   void update(UserSettingsModel prefs) {
     state = prefs;
+    prefs.save();
   }
 
   String get host {

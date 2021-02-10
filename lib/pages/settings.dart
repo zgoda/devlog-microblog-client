@@ -1,4 +1,6 @@
+import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
+import 'package:devlog_microblog_client/widgets/misc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,93 +10,77 @@ class SettingsScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final settingsData = useProvider(settingsProvider);
-    return settingsData.when(
-      data: (settings) {
-        final host = useState(settings.host);
-        final hostController = useTextEditingController(text: settings.host);
-        final defaultAuthor = useState(settings.defaultAuthor);
-        final defaultAuthorController =
-            useTextEditingController(text: settings.defaultAuthor);
-        final unsecuredTransport = useState(settings.unsecuredTransport);
-        final modeOffline = useState(settings.modeOffline);
-        final storeCredentials = useState(settings.storeCredentials);
-        return Scaffold(
-          resizeToAvoidBottomInset: true,
-          appBar: AppBar(
-            title: Text('Application settings'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  settings.save();
-                  Navigator.of(context).pop();
-                },
-                child: Text('Save'),
-              ),
-            ],
+    final settingsNotifier = useProvider(userPrefsProvider);
+    final settings = useProvider(userPrefsProvider.state);
+    final hostController = useTextEditingController(text: settings.host);
+    final defaultAuthorController =
+        useTextEditingController(text: settings.defaultAuthor);
+    final unsecuredTransport = useState(settings.unsecuredTransport);
+    final modeOffline = useState(settings.modeOffline);
+    final storeCredentials = useState(settings.storeCredentials);
+    final unsecuredTransportSwitch = userPrefsSwitch(
+      'Use unsecured transport',
+      unsecuredTransport.value,
+      (value) => unsecuredTransport.value = value,
+    );
+    final modeOfflineSwitch = userPrefsSwitch(
+      'Offline mode',
+      modeOffline.value,
+      (value) => modeOffline.value = value,
+    );
+    final storeCredentialsSwitch = userPrefsSwitch(
+      'Store login credentials',
+      storeCredentials.value,
+      (value) => storeCredentials.value = value,
+    );
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        title: Text('Application settings'),
+        actions: <Widget>[
+          TextButton(
+            style: TextButton.styleFrom(primary: Colors.white),
+            onPressed: () {
+              settingsNotifier.update(UserSettingsModel(
+                unsecuredTransport.value,
+                storeCredentials.value,
+                modeOffline.value,
+                hostController.text,
+                defaultAuthorController.text,
+                settings.username,
+                settings.password,
+              ));
+              Navigator.of(context).pop();
+            },
+            child: Text('Save'),
           ),
-          body: Column(
-            children: <Widget>[
-              SizedBox(height: 15),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Host',
-                  hintText: 'Host name or IP address',
-                  contentPadding: EdgeInsets.all(10),
-                ),
-                controller: hostController,
-                onChanged: (value) {
-                  host.value = value;
-                  settings.host = value;
-                },
-              ),
-              SizedBox(height: 25),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Author',
-                  hintText: 'Default post author',
-                  contentPadding: EdgeInsets.all(10),
-                ),
-                controller: defaultAuthorController,
-                onChanged: (value) {
-                  defaultAuthor.value = value;
-                  settings.defaultAuthor = value;
-                },
-              ),
-              SizedBox(height: 25),
-              SwitchListTile(
-                title: const Text('Use unsecured transport'),
-                value: unsecuredTransport.value,
-                onChanged: (value) {
-                  unsecuredTransport.value = value;
-                  settings.unsecuredTransport = value;
-                },
-              ),
-              SwitchListTile(
-                title: const Text('Offline mode'),
-                value: modeOffline.value,
-                onChanged: (value) {
-                  modeOffline.value = value;
-                  settings.modeOffline = value;
-                },
-              ),
-              SwitchListTile(
-                title: const Text('Store login credentials'),
-                value: storeCredentials.value,
-                onChanged: (value) {
-                  storeCredentials.value = value;
-                  settings.storeCredentials = value;
-                },
-              ),
-            ],
-          ),
-        );
-      },
-      loading: () => Center(
-        child: CircularProgressIndicator(),
+        ],
       ),
-      error: (err, stack) => Center(
-        child: Text(err),
+      body: Column(
+        children: <Widget>[
+          SizedBox(height: 15),
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: 'Host',
+              hintText: 'Host name or IP address',
+              contentPadding: EdgeInsets.all(10),
+            ),
+            controller: hostController,
+          ),
+          SizedBox(height: 25),
+          TextFormField(
+            decoration: InputDecoration(
+              labelText: 'Author',
+              hintText: 'Default post author',
+              contentPadding: EdgeInsets.all(10),
+            ),
+            controller: defaultAuthorController,
+          ),
+          SizedBox(height: 25),
+          unsecuredTransportSwitch,
+          modeOfflineSwitch,
+          storeCredentialsSwitch,
+        ],
       ),
     );
   }

@@ -38,3 +38,12 @@ class ServerStatusIcon extends HookWidget {
     return result;
   }
 }
+
+SwitchListTile userPrefsSwitch(
+    String title, bool initialValue, Function onChanged) {
+  return SwitchListTile(
+    value: initialValue,
+    onChanged: onChanged,
+    title: Text(title),
+  );
+}
