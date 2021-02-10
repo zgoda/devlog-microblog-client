@@ -2,10 +2,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class UserSettingsModel {
-  bool unsecuredTransport;
+  final bool unsecuredTransport;
   bool storeCredentials;
   bool modeOffline;
-  String host;
+  final String host;
   String defaultAuthor;
   String username;
   String password;
@@ -16,23 +16,33 @@ class UserSettingsModel {
     this.modeOffline,
     this.host,
     this.defaultAuthor,
+    this.username,
+    this.password,
   );
 
-  UserSettingsModel.empty() {
-    unsecuredTransport = false;
-    storeCredentials = true;
-    modeOffline = false;
-  }
+  UserSettingsModel.empty() : this(false, true, false, '', '', '', '');
 
-  UserSettingsModel.copyFrom(UserSettingsModel other) {
-    unsecuredTransport = other.unsecuredTransport;
-    storeCredentials = other.storeCredentials;
-    modeOffline = other.modeOffline;
-    host = other.host;
-    defaultAuthor = other.defaultAuthor;
-    username = other.username;
-    password = other.password;
-  }
+  UserSettingsModel.copyFrom(UserSettingsModel other)
+      : this(
+          other.unsecuredTransport,
+          other.storeCredentials,
+          other.modeOffline,
+          other.host,
+          other.defaultAuthor,
+          other.username,
+          other.password,
+        );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) &&
+      other is UserSettingsModel &&
+      runtimeType == other.runtimeType &&
+      unsecuredTransport == other.unsecuredTransport &&
+      host == other.host;
+
+  @override
+  int get hashCode => host.hashCode + unsecuredTransport.hashCode;
 
   static Future<UserSettingsModel> whenReady(
       Future<SharedPreferences> future) async {
@@ -48,6 +58,8 @@ class UserSettingsModel {
       modeOffline,
       host,
       defaultAuthor,
+      '',
+      '',
     );
     final FlutterSecureStorage securePrefs = FlutterSecureStorage();
     try {
@@ -72,6 +84,8 @@ class UserSettingsModel {
       modeOffline,
       host,
       defaultAuthor,
+      '',
+      '',
     );
     final FlutterSecureStorage securePrefs = FlutterSecureStorage();
     try {
@@ -101,7 +115,9 @@ class UserSettingsModel {
   }
 
   bool hasCredentials() {
-    return storeCredentials && username != null && password != null;
+    return storeCredentials &&
+        !['', null].contains(username) &&
+        !['', null].contains(password);
   }
 
   bool isConfigured() {

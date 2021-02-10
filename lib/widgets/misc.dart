@@ -6,16 +6,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 Icon serverStatusIcon(ServerStatus status) {
   Icon icon;
   switch (status) {
-    case ServerStatus.OFFLINE:
+    case ServerStatus.offline:
       icon = Icon(Icons.lightbulb_outline);
       break;
-    case ServerStatus.ERROR:
+    case ServerStatus.error:
       icon = Icon(
         Icons.lightbulb,
         color: Colors.red,
       );
       break;
-    case ServerStatus.ONLINE:
+    case ServerStatus.online:
       icon = Icon(
         Icons.lightbulb_outline,
         color: Colors.green,
@@ -32,10 +32,8 @@ class ServerStatusIcon extends HookWidget {
     Widget result;
     serverStatus.when(
       data: (status) => result = serverStatusIcon(status),
-      loading: () => result = CircularProgressIndicator(),
-      error: (err, stack) => result = Center(
-        child: Text(err),
-      ),
+      loading: () => result = serverStatusIcon(ServerStatus.offline),
+      error: (_, __) => result = serverStatusIcon(ServerStatus.error),
     );
     return result;
   }

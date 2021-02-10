@@ -12,27 +12,15 @@ final serverStatusProvider = StreamProvider<ServerStatus>((ref) {
   return service.status();
 });
 
-class ServerStatusNotifier extends StateNotifier<ServerStatus> {
-  ServerStatusNotifier() : super(ServerStatus.OFFLINE);
-
-  void update(ServerStatus status) {
-    state = status;
-  }
-
-  ServerStatus get status {
-    return state;
-  }
-}
-
 final serverStatusServiceProvider = Provider<ServerStatusService>((ref) {
   final prefs = ref.watch(userPrefsProvider.state);
   return ServerStatusService.getInstance(prefs);
 });
 
 enum ServerStatus {
-  OFFLINE,
-  ERROR,
-  ONLINE,
+  offline,
+  error,
+  online,
 }
 
 class ServerStatusService {
@@ -73,12 +61,12 @@ class ServerStatusService {
     try {
       final resp = await _http.head(_url);
       if (resp.statusCode == 200) {
-        return ServerStatus.ONLINE;
+        return ServerStatus.online;
       } else {
-        return ServerStatus.ERROR;
+        return ServerStatus.error;
       }
     } on SocketException {
-      return ServerStatus.OFFLINE;
+      return ServerStatus.offline;
     }
   }
 
