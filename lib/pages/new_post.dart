@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class PostCreateScreen extends StatelessWidget {
+class PostCreateScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    final textController = useTextEditingController();
+    final titleController = useTextEditingController();
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -20,8 +23,29 @@ class PostCreateScreen extends StatelessWidget {
         ],
       ),
       body: SingleChildScrollView(
-        child: Center(
-          child: Text('New post'),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            TextField(
+              controller: textController,
+              autofocus: true,
+              maxLines: null,
+              minLines: 8,
+              decoration: InputDecoration(
+                hintText: 'Post text',
+                contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+              ),
+            ),
+            SizedBox(height: 25),
+            TextField(
+              controller: titleController,
+              decoration: InputDecoration(
+                hintText: 'Post title (optional)',
+                contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
+              ),
+            )
+          ],
         ),
       ),
     );

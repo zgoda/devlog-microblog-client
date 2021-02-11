@@ -28,27 +28,16 @@ class MicroblogEntryItem extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    dateFormatted,
-                    style: h6,
-                  ),
-                  Text(
-                    post.created.year.toString(),
-                    style: h6,
-                  )
+                  Text(dateFormatted, style: h6),
+                  Text(post.created.year.toString(), style: h6)
                 ],
               ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  post.title ?? '',
-                  style: h6,
-                ),
-                MarkdownBody(
-                  data: post.text,
-                ),
+                Text(post.title ?? '', style: h6),
+                MarkdownBody(data: post.text),
               ],
             ),
           ],
@@ -63,15 +52,8 @@ class MicroblogEntryItem extends StatelessWidget {
 class MicroblogEntryList extends HookWidget {
   MicroblogEntryList({Key key}) : super(key: key);
 
-  Future<int> _fetchPostsPage(
-      int curPage, PostService service, PostListNotifier listModel) async {
-    final page = curPage + 1;
-    final posts = await service.fetchCollection(page: page);
-    listModel.addAll(posts);
-    if (posts.isNotEmpty) {
-      return page;
-    }
-    return curPage;
+  Future<int> _fetchPostsPage(int curPage, PostService service) async {
+    return await service.fetchCollection(page: curPage + 1);
   }
 
   @override
@@ -80,7 +62,6 @@ class MicroblogEntryList extends HookWidget {
     final settings = useProvider(userPrefsProvider.state);
     final auth = useProvider(authenticationServiceProvider);
     final postService = useProvider(postCollectionServiceProvider);
-    final postList = useProvider(postListProvider);
     final postListModel = useProvider(postListProvider.state);
     useMemoized(() async {
       if (settings.isConfigured()) {
@@ -91,8 +72,7 @@ class MicroblogEntryList extends HookWidget {
           okResult = await Navigator.of(context).pushNamed('/login');
         }
         if (okResult) {
-          final newPage =
-              await _fetchPostsPage(curPage.value, postService, postList);
+          final newPage = await _fetchPostsPage(curPage.value, postService);
           curPage.value = newPage;
         }
       }

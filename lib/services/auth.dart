@@ -29,6 +29,7 @@ class AuthenticationService {
   String _password;
   Uri _url;
   String _token;
+  final _http = http.Client();
 
   static const ENDPOINT = 'login';
 
@@ -59,7 +60,7 @@ class AuthenticationService {
     };
     _token = '';
     try {
-      final resp = await http.post(_url, body: data);
+      final resp = await _http.post(_url, body: data);
       if (resp.statusCode == 200) {
         final Map<String, dynamic> respData = jsonDecode(resp.body);
         _token = respData['token'];

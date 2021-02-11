@@ -1,5 +1,3 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 class Post {
   String title;
   String text;
@@ -24,19 +22,5 @@ class Post {
     textHtml = json['textHtml'];
     created = DateTime.parse(json['created']);
     pk = json['pk'];
-  }
-}
-
-final postListProvider = StateNotifierProvider((ref) => PostListNotifier());
-
-class PostListNotifier extends StateNotifier<List<Post>> {
-  PostListNotifier() : super([]);
-
-  void add(Post post) {
-    state = [...state, post];
-  }
-
-  void addAll(List<Post> posts) {
-    state = [...state, ...posts];
   }
 }
