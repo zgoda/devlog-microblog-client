@@ -10,13 +10,20 @@ class PostEditScreen extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Single post'),
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Markdown(
-            data: post.text,
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Saving post...'),
+              ),
+            ),
+            child: Text('Save'),
+            style: TextButton.styleFrom(primary: Colors.white),
           ),
-        ),
+        ],
+      ),
+      body: Markdown(
+        data: post.text,
       ),
     );
   }

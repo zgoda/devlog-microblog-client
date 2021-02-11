@@ -40,7 +40,7 @@ class UserPrefsNotifier extends StateNotifier<UserSettingsModel> {
 }
 
 final settingsProvider = FutureProvider<UserSettingsModel>((ref) async {
-  final localStorageService = await LocalStorageService.getInstance();
+  final localStorageService = await LocalStorageService.create();
   final settings = localStorageService.settings;
   final prefsNotifier = ref.read(userPrefsProvider);
   prefsNotifier.update(settings);
@@ -48,17 +48,16 @@ final settingsProvider = FutureProvider<UserSettingsModel>((ref) async {
 });
 
 class LocalStorageService {
-  static LocalStorageService _instance;
-  static UserSettingsModel _settings;
+  UserSettingsModel _settings;
 
-  static Future<LocalStorageService> getInstance() async {
-    if (_instance == null) {
-      _instance = LocalStorageService();
-    }
-    if (_settings == null) {
-      _settings = await UserSettingsModel.load();
-    }
-    return _instance;
+  static Future<LocalStorageService> create() async {
+    final instance = LocalStorageService();
+    await instance._loadUserPrefs();
+    return instance;
+  }
+
+  Future<void> _loadUserPrefs() async {
+    _settings = await UserSettingsModel.load();
   }
 
   UserSettingsModel get settings {

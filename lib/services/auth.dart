@@ -14,7 +14,7 @@ final authTokenProvider = Provider<String>((ref) {
 
 final authenticationServiceProvider = Provider<AuthenticationService>((ref) {
   final prefs = ref.watch(userPrefsProvider.state);
-  return AuthenticationService.getInstance(prefs);
+  return AuthenticationService(prefs);
 });
 
 enum AuthResult {
@@ -25,20 +25,12 @@ enum AuthResult {
 }
 
 class AuthenticationService {
-  static AuthenticationService _instance;
   String _userName;
   String _password;
   Uri _url;
   String _token;
 
   static const ENDPOINT = 'login';
-
-  static getInstance(UserSettingsModel settings) {
-    if (_instance == null) {
-      _instance = AuthenticationService(settings);
-    }
-    return _instance;
-  }
 
   AuthenticationService(UserSettingsModel settings) {
     _userName = settings.username;

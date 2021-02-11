@@ -11,13 +11,11 @@ import 'package:http/http.dart' as http;
 final postCollectionServiceProvider = Provider<PostService>((ref) {
   final prefs = ref.watch(userPrefsProvider.state);
   final auth = ref.watch(authenticationServiceProvider);
-  final service = PostService.getInstance();
-  service.init(prefs, auth);
+  final service = PostService(prefs, auth);
   return service;
 });
 
 class PostService {
-  static PostService _instance;
   Uri _collectionUrl;
   var _currentPage = 1;
   final _http = http.Client();
@@ -26,14 +24,7 @@ class PostService {
 
   AuthenticationService _auth;
 
-  static PostService getInstance() {
-    if (_instance == null) {
-      _instance = PostService();
-    }
-    return _instance;
-  }
-
-  void init(UserSettingsModel prefs, AuthenticationService auth) {
+  PostService(UserSettingsModel prefs, AuthenticationService auth) {
     _collectionUrl = buildServerUrl(
       prefs.host,
       buildEndpointPath(ENDPOINT),

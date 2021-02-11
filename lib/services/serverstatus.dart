@@ -14,7 +14,7 @@ final serverStatusProvider = StreamProvider<ServerStatus>((ref) {
 
 final serverStatusServiceProvider = Provider<ServerStatusService>((ref) {
   final prefs = ref.watch(userPrefsProvider.state);
-  return ServerStatusService.getInstance(prefs);
+  return ServerStatusService(prefs);
 });
 
 enum ServerStatus {
@@ -24,8 +24,6 @@ enum ServerStatus {
 }
 
 class ServerStatusService {
-  static ServerStatusService _instance;
-
   Uri _url;
   final _http = http.Client();
 
@@ -48,12 +46,12 @@ class ServerStatusService {
 
   Stream<ServerStatus> status() async* {
     while (true) {
-      await Future.delayed(_interval);
-      final status = await _checkStatus();
-      yield status;
       if (_stopStream) {
         break;
       }
+      final status = await _checkStatus();
+      yield status;
+      await Future.delayed(_interval);
     }
   }
 
@@ -68,12 +66,5 @@ class ServerStatusService {
     } on SocketException {
       return ServerStatus.offline;
     }
-  }
-
-  static ServerStatusService getInstance(UserSettingsModel prefs) {
-    if (_instance == null) {
-      _instance = ServerStatusService(prefs);
-    }
-    return _instance;
   }
 }
