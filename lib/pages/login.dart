@@ -19,7 +19,7 @@ class LoginScreen extends HookWidget {
           controller: userNameController,
           obscureText: false,
           decoration: InputDecoration(
-            hintText: 'User name',
+            hintText: 'Nazwa użytkownika',
             contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           ),
         );
@@ -27,7 +27,7 @@ class LoginScreen extends HookWidget {
           controller: passwordController,
           obscureText: true,
           decoration: InputDecoration(
-            hintText: 'Password',
+            hintText: 'Hasło',
             contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
           ),
         );
@@ -45,22 +45,19 @@ class LoginScreen extends HookWidget {
                 settings.save();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('User logged in'),
+                    content: Text('Użytkownik zalogowany'),
                   ),
                 );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Login failed'),
+                    content: Text('Logowanie nieudane'),
                   ),
                 );
               }
               Navigator.of(context).pop(loginResult);
             },
-            child: Text(
-              'Login',
-              textAlign: TextAlign.center,
-            ),
+            child: Text('Zaloguj', textAlign: TextAlign.center),
           ),
         );
         result = Scaffold(

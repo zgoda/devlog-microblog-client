@@ -19,23 +19,23 @@ class SettingsScreen extends HookWidget {
     final modeOffline = useState(settings.modeOffline);
     final storeCredentials = useState(settings.storeCredentials);
     final unsecuredTransportSwitch = userPrefsSwitch(
-      'Use unsecured transport',
+      'Transfer bez SSL',
       unsecuredTransport.value,
       (value) => unsecuredTransport.value = value,
     );
     final modeOfflineSwitch = userPrefsSwitch(
-      'Offline mode',
+      'Tryb offline',
       modeOffline.value,
       (value) => modeOffline.value = value,
     );
     final storeCredentialsSwitch = userPrefsSwitch(
-      'Store login credentials',
+      'Zapisz dane logowania',
       storeCredentials.value,
       (value) => storeCredentials.value = value,
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text('Application settings'),
+        title: Text('Ustawienia aplikacji'),
         actions: <Widget>[
           TextButton(
             style: TextButton.styleFrom(primary: Colors.white),
@@ -51,7 +51,7 @@ class SettingsScreen extends HookWidget {
               ));
               Navigator.of(context).pop();
             },
-            child: Text('Save'),
+            child: Text('Zapisz'),
           ),
         ],
       ),
@@ -61,8 +61,8 @@ class SettingsScreen extends HookWidget {
             SizedBox(height: 15),
             TextFormField(
               decoration: InputDecoration(
-                labelText: 'Host',
-                hintText: 'Host name or IP address',
+                labelText: 'Serwer',
+                hintText: 'Nazwa serwera lub jego adres IP',
                 contentPadding: EdgeInsets.all(10),
               ),
               controller: hostController,
@@ -71,8 +71,8 @@ class SettingsScreen extends HookWidget {
             SizedBox(height: 25),
             TextFormField(
               decoration: InputDecoration(
-                labelText: 'Author',
-                hintText: 'Default post author',
+                labelText: 'Autor',
+                hintText: 'Domyślny autor',
                 contentPadding: EdgeInsets.all(10),
               ),
               controller: defaultAuthorController,

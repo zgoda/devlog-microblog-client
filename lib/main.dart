@@ -22,7 +22,7 @@ class MicroblogApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Devlog Microblog Client',
+      title: 'Microblog w Devlogu',
       home: LoadingScreen(),
       routes: <String, WidgetBuilder>{
         '/post/edit': (BuildContext context) => PostEditScreen(),

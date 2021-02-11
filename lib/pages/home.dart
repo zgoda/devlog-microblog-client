@@ -19,12 +19,12 @@ class HomeScreen extends HookWidget {
         }
         result = Scaffold(
           floatingActionButton: FloatingActionButton(
-            tooltip: 'Create new post',
+            tooltip: 'Utwórz nowy post',
             child: Icon(Icons.add),
             onPressed: () => Navigator.of(context).pushNamed('/post/new'),
           ),
           appBar: AppBar(
-            title: Text('Devlog Microblog Client'),
+            title: Text('Microblog w Devlogu'),
             leading: ServerStatusIcon(),
             actions: [
               IconButton(
@@ -50,14 +50,14 @@ class HomeScreen extends HookWidget {
     var valueSelected = await showDialog(
       context: ctx,
       builder: (_) => AlertDialog(
-        title: Text('Application not configured'),
+        title: Text('Brak ustawień aplikacji'),
         content: Text(
-          'Application is not configured yet, do you want to open settings page?',
+          'Aplikacja nie jest skonfigurowana, otworzyć stronę z ustawieniami?',
         ),
         actions: <Widget>[
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text('Yes'),
+            child: Text('Tak'),
           ),
         ],
       ),

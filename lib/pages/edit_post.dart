@@ -9,15 +9,15 @@ class PostEditScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Single post'),
+        title: Text('Post'),
         actions: <Widget>[
           TextButton(
             onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Saving post...'),
+                content: Text('Zapisywanie postu...'),
               ),
             ),
-            child: Text('Save'),
+            child: Text('Zapisz'),
             style: TextButton.styleFrom(primary: Colors.white),
           ),
         ],

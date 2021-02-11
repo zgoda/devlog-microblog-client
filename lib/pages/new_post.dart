@@ -9,15 +9,15 @@ class PostCreateScreen extends HookWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Create new post'),
+        title: Text('Utwórz nowy post'),
         actions: <Widget>[
           TextButton(
             onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Saving post...'),
+                content: Text('Zapisywanie postu...'),
               ),
             ),
-            child: Text('Save'),
+            child: Text('Zapisz'),
             style: TextButton.styleFrom(primary: Colors.white),
           ),
         ],
@@ -33,7 +33,7 @@ class PostCreateScreen extends HookWidget {
               maxLines: null,
               minLines: 8,
               decoration: InputDecoration(
-                hintText: 'Post text',
+                hintText: 'Treść',
                 contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
               ),
             ),
@@ -41,7 +41,7 @@ class PostCreateScreen extends HookWidget {
             TextField(
               controller: titleController,
               decoration: InputDecoration(
-                hintText: 'Post title (optional)',
+                hintText: 'Tytuł (niekoniecznie)',
                 contentPadding: EdgeInsets.fromLTRB(20, 15, 20, 15),
               ),
             )
