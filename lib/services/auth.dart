@@ -13,8 +13,10 @@ final authTokenProvider = Provider<String>((ref) {
 });
 
 final authenticationServiceProvider = Provider<AuthenticationService>((ref) {
-  final prefs = ref.watch(userPrefsProvider.state);
-  return AuthenticationService(prefs);
+  final host = ref.watch(hostProvider);
+  final secure = ref.watch(secureTransportProvider);
+  final credentials = ref.watch(credentialsProvider);
+  return AuthenticationService(host, secure, credentials);
 });
 
 enum AuthResult {
@@ -33,13 +35,13 @@ class AuthenticationService {
 
   static const ENDPOINT = 'login';
 
-  AuthenticationService(UserSettingsModel settings) {
-    _userName = settings.username;
-    _password = settings.password;
+  AuthenticationService(String host, bool secure, Credentials credentials) {
+    _userName = credentials.name;
+    _password = credentials.password;
     _url = buildServerUrl(
-      settings.host,
+      host,
       buildEndpointPath(ENDPOINT),
-      secure: !settings.unsecuredTransport,
+      secure: secure,
     );
   }
 

@@ -1,5 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+class Credentials {
+  final String name;
+  final String password;
+
+  Credentials({@required String name, @required String password})
+      : this.name = name,
+        this.password = password,
+        super();
+}
 
 class UserSettingsModel {
   final bool unsecuredTransport;

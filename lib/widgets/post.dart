@@ -65,7 +65,7 @@ class MicroblogEntryList extends HookWidget {
     final postListModel = useProvider(postListProvider.state);
     useMemoized(() async {
       if (settings.isConfigured()) {
-        bool okResult;
+        var okResult;
         if (settings.hasCredentials()) {
           okResult = await auth.login() == AuthResult.ok;
         } else {

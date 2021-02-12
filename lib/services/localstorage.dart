@@ -16,6 +16,11 @@ final authorProvider = Provider<String>((ref) {
   return prefs.author;
 });
 
+final credentialsProvider = Provider<Credentials>((ref) {
+  final prefs = ref.watch(userPrefsProvider);
+  return prefs.credentials;
+});
+
 final userPrefsProvider = StateNotifierProvider((ref) => UserPrefsNotifier());
 
 class UserPrefsNotifier extends StateNotifier<UserSettingsModel> {
@@ -36,6 +41,17 @@ class UserPrefsNotifier extends StateNotifier<UserSettingsModel> {
 
   String get author {
     return state.defaultAuthor;
+  }
+
+  set credentials(Credentials credentials) {
+    final newModel = UserSettingsModel.copyFrom(state);
+    newModel.setCredentials(credentials.name, credentials.password);
+    state = newModel;
+    newModel.save();
+  }
+
+  Credentials get credentials {
+    return Credentials(name: state.username, password: state.password);
   }
 }
 
