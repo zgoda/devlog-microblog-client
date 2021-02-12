@@ -18,7 +18,9 @@ class PostEditScreen extends StatelessWidget {
               ),
             ),
             child: Text('Zapisz'),
-            style: TextButton.styleFrom(primary: Colors.white),
+            style: TextButton.styleFrom(
+              primary: Theme.of(context).dialogBackgroundColor,
+            ),
           ),
         ],
       ),

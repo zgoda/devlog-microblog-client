@@ -123,7 +123,7 @@ class UserSettingsModel {
 
   bool isConfigured() => ![null, ''].contains(host);
 
-  void save() async {
+  Future<void> save() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('unsecuredTransport', unsecuredTransport);
     prefs.setBool('storeCredentials', storeCredentials);

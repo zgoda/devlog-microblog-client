@@ -17,7 +17,7 @@ Icon serverStatusIcon(ServerStatus status) {
       break;
     case ServerStatus.online:
       icon = Icon(
-        Icons.lightbulb_outline,
+        Icons.lightbulb,
         color: Colors.green,
       );
       break;

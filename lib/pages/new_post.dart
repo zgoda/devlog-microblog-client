@@ -23,7 +23,9 @@ class PostCreateScreen extends HookWidget {
               ),
             ),
             child: Text('Zapisz'),
-            style: TextButton.styleFrom(primary: Colors.white),
+            style: TextButton.styleFrom(
+              primary: Theme.of(context).dialogBackgroundColor,
+            ),
           ),
         ],
       ),

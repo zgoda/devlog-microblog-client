@@ -1,5 +1,6 @@
 import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
+import 'package:devlog_microblog_client/utils/forms.dart';
 import 'package:devlog_microblog_client/widgets/misc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -13,8 +14,9 @@ class SettingsScreen extends HookWidget {
     final settingsNotifier = useProvider(userPrefsProvider);
     final settings = useProvider(userPrefsProvider.state);
     final hostController = useTextEditingController(text: settings.host);
-    final defaultAuthorController =
-        useTextEditingController(text: settings.defaultAuthor);
+    final defaultAuthorController = useTextEditingController(
+      text: settings.defaultAuthor,
+    );
     final unsecuredTransport = useState(settings.unsecuredTransport);
     final storeCredentials = useState(settings.storeCredentials);
     final unsecuredTransportSwitch = userPrefsSwitch(
@@ -32,7 +34,9 @@ class SettingsScreen extends HookWidget {
         title: Text('Ustawienia aplikacji'),
         actions: <Widget>[
           TextButton(
-            style: TextButton.styleFrom(primary: Colors.white),
+            style: TextButton.styleFrom(
+              primary: Theme.of(context).dialogBackgroundColor,
+            ),
             onPressed: () {
               settingsNotifier.update(UserSettingsModel(
                 unsecuredTransport.value,
@@ -51,26 +55,26 @@ class SettingsScreen extends HookWidget {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(height: 15),
+            DEFAULT_FIELD_SPACER,
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Serwer',
                 hintText: 'Nazwa serwera lub jego adres IP',
-                contentPadding: EdgeInsets.all(10),
+                contentPadding: DEFAULT_TEXTFIELD_INSETS,
               ),
               controller: hostController,
               autofocus: true,
             ),
-            SizedBox(height: 25),
+            DEFAULT_FIELD_SPACER,
             TextFormField(
               decoration: InputDecoration(
                 labelText: 'Autor',
                 hintText: 'Domyślny autor',
-                contentPadding: EdgeInsets.all(10),
+                contentPadding: DEFAULT_TEXTFIELD_INSETS,
               ),
               controller: defaultAuthorController,
             ),
-            SizedBox(height: 25),
+            DEFAULT_FIELD_SPACER,
             unsecuredTransportSwitch,
             storeCredentialsSwitch,
           ],

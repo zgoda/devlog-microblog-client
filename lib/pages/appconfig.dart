@@ -1,8 +1,10 @@
 import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/auth.dart';
+import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/widgets/misc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AppConfigWizard extends HookWidget {
   ListTile _verificationStatus(AuthResult status) {
@@ -51,13 +53,13 @@ class AppConfigWizard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final currentStep = useState(0);
-    final complete = useState(false);
     final hostController = useTextEditingController();
     final insecureTransfer = useState(false);
     final storeCredentials = useState(true);
     final userNameController = useTextEditingController();
     final passwordController = useTextEditingController();
     final verificationStatus = useState(AuthResult.none);
+    final prefs = useProvider(userPrefsProvider);
     final steps = <Step>[
       Step(
         title: const Text('Serwer'),
@@ -150,15 +152,21 @@ class AppConfigWizard extends HookWidget {
                 if (currentStep.value < steps.length - 1) {
                   currentStep.value = currentStep.value + 1;
                 } else {
-                  final prefs = UserSettingsModel(
-                    insecureTransfer.value,
-                    storeCredentials.value,
-                    hostController.text,
-                    userNameController.text,
-                    userNameController.text,
-                    passwordController.text,
+                  prefs.update(
+                    UserSettingsModel(
+                      insecureTransfer.value,
+                      storeCredentials.value,
+                      hostController.text,
+                      userNameController.text,
+                      userNameController.text,
+                      passwordController.text,
+                    ),
                   );
-                  prefs.save();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Aplikacja została skonfigurowana'),
+                    ),
+                  );
                   Navigator.of(context).pushReplacementNamed('/home');
                 }
               },
