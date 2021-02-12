@@ -58,7 +58,7 @@ class UserPrefsNotifier extends StateNotifier<UserSettingsModel> {
 final settingsProvider = FutureProvider<UserSettingsModel>((ref) async {
   final localStorageService = await LocalStorageService.create();
   final settings = localStorageService.settings;
-  final prefsNotifier = ref.read(userPrefsProvider);
+  final prefsNotifier = ref.watch(userPrefsProvider);
   prefsNotifier.update(settings);
   return settings;
 });

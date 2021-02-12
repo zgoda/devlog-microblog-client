@@ -16,17 +16,11 @@ class SettingsScreen extends HookWidget {
     final defaultAuthorController =
         useTextEditingController(text: settings.defaultAuthor);
     final unsecuredTransport = useState(settings.unsecuredTransport);
-    final modeOffline = useState(settings.modeOffline);
     final storeCredentials = useState(settings.storeCredentials);
     final unsecuredTransportSwitch = userPrefsSwitch(
       'Transfer bez SSL',
       unsecuredTransport.value,
       (value) => unsecuredTransport.value = value,
-    );
-    final modeOfflineSwitch = userPrefsSwitch(
-      'Tryb offline',
-      modeOffline.value,
-      (value) => modeOffline.value = value,
     );
     final storeCredentialsSwitch = userPrefsSwitch(
       'Zapisz dane logowania',
@@ -43,7 +37,6 @@ class SettingsScreen extends HookWidget {
               settingsNotifier.update(UserSettingsModel(
                 unsecuredTransport.value,
                 storeCredentials.value,
-                modeOffline.value,
                 hostController.text,
                 defaultAuthorController.text,
                 settings.username,
@@ -79,7 +72,6 @@ class SettingsScreen extends HookWidget {
             ),
             SizedBox(height: 25),
             unsecuredTransportSwitch,
-            modeOfflineSwitch,
             storeCredentialsSwitch,
           ],
         ),

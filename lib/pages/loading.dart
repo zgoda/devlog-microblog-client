@@ -1,3 +1,4 @@
+import 'package:devlog_microblog_client/pages/appconfig.dart';
 import 'package:devlog_microblog_client/pages/home.dart';
 import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,13 @@ class LoadingScreen extends HookWidget {
         child: CircularProgressIndicator(),
       ),
     );
-    userPrefsData.whenData((_) => result = HomeScreen());
+    userPrefsData.whenData((prefs) {
+      if (prefs.isConfigured() && prefs.hasCredentials()) {
+        result = HomeScreen();
+      } else {
+        result = AppConfigWizard();
+      }
+    });
     return result;
   }
 }

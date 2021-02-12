@@ -7,6 +7,11 @@ import 'package:devlog_microblog_client/utils/web.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
+final currentStatusProvider = FutureProvider<ServerStatus>((ref) async {
+  final stream = ref.watch(serverStatusProvider.stream);
+  return await stream.last;
+});
+
 final serverStatusProvider = StreamProvider<ServerStatus>((ref) {
   final service = ref.watch(serverStatusServiceProvider);
   return service.status();

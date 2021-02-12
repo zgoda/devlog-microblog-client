@@ -15,7 +15,6 @@ class Credentials {
 class UserSettingsModel {
   final bool unsecuredTransport;
   bool storeCredentials;
-  bool modeOffline;
   final String host;
   String defaultAuthor;
   String username;
@@ -24,20 +23,18 @@ class UserSettingsModel {
   UserSettingsModel(
     this.unsecuredTransport,
     this.storeCredentials,
-    this.modeOffline,
     this.host,
     this.defaultAuthor,
     this.username,
     this.password,
   );
 
-  UserSettingsModel.empty() : this(false, true, false, '', '', '', '');
+  UserSettingsModel.empty() : this(false, true, '', '', '', '');
 
   UserSettingsModel.copyFrom(UserSettingsModel other)
       : this(
           other.unsecuredTransport,
           other.storeCredentials,
-          other.modeOffline,
           other.host,
           other.defaultAuthor,
           other.username,
@@ -60,13 +57,11 @@ class UserSettingsModel {
     final prefs = await future;
     final unsecuredTransport = prefs.getBool('unsecuredTransport') ?? false;
     final storeCredentials = prefs.getBool('storeCredentials') ?? true;
-    final modeOffline = prefs.getBool('modeOffline') ?? false;
     final host = prefs.getString('host');
     final defaultAuthor = prefs.getString('defaultAuthor');
     final model = UserSettingsModel(
       unsecuredTransport,
       storeCredentials,
-      modeOffline,
       host,
       defaultAuthor,
       '',
@@ -86,13 +81,11 @@ class UserSettingsModel {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final unsecuredTransport = prefs.getBool('unsecuredTransport') ?? false;
     final storeCredentials = prefs.getBool('storeCredentials') ?? true;
-    final modeOffline = prefs.getBool('modeOffline') ?? false;
     final host = prefs.getString('host');
     final defaultAuthor = prefs.getString('defaultAuthor');
     final model = UserSettingsModel(
       unsecuredTransport,
       storeCredentials,
-      modeOffline,
       host,
       defaultAuthor,
       '',
@@ -128,15 +121,12 @@ class UserSettingsModel {
   bool hasCredentials() =>
       !['', null].contains(username) && !['', null].contains(password);
 
-  bool isConfigured() {
-    return ![null, ''].contains(host);
-  }
+  bool isConfigured() => ![null, ''].contains(host);
 
   void save() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool('unsecuredTransport', unsecuredTransport);
     prefs.setBool('storeCredentials', storeCredentials);
-    prefs.setBool('modeOffline', modeOffline);
     prefs.setString('host', host);
     prefs.setString('defaultAuthor', defaultAuthor);
     saveCredentials(username, password);
