@@ -14,11 +14,11 @@ class PostListNotifier extends StateNotifier<List<Post>> {
   PostListNotifier() : super([]);
 
   void add(Post post) {
-    state = [...state, post];
+    state = [post, ...state];
   }
 
   void addAll(List<Post> posts) {
-    state = [...state, ...posts];
+    state = [...posts, ...state];
   }
 }
 
@@ -73,5 +73,26 @@ class PostService {
     }
     _notifier.addAll(posts);
     return _currentPage;
+  }
+
+  Future<void> addPost(Post post) async {
+    if (!_auth.hasToken()) {
+      await _auth.login();
+    }
+    var headers = _auth.authHeader();
+    headers['Content-Type'] = 'application/json';
+    final requestBody = jsonEncode(post.toJson());
+    var resp =
+        await _http.post(_collectionUrl, headers: headers, body: requestBody);
+    if (resp.statusCode == 400) {
+      await _auth.login();
+      headers.addAll(_auth.authHeader());
+      resp =
+          await _http.post(_collectionUrl, headers: headers, body: requestBody);
+    }
+    if (resp.statusCode < 300) {
+      final newPost = Post.fromJson(jsonDecode(resp.body));
+      _notifier.add(newPost);
+    }
   }
 }

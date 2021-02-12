@@ -27,18 +27,21 @@ class MicroblogEntryItem extends StatelessWidget {
               margin: EdgeInsets.only(right: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(dateFormatted, style: h6),
                   Text(post.created.year.toString(), style: h6)
                 ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(post.title ?? '', style: h6),
-                MarkdownBody(data: post.text),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(post.title ?? '', style: h6),
+                  MarkdownBody(data: post.text),
+                ],
+              ),
             ),
           ],
         ),

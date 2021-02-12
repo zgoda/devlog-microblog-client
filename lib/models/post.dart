@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class Post {
   String title;
   String text;
@@ -15,6 +17,12 @@ class Post {
     this.created,
   });
 
+  Post.createNew({@required String text, String author, String title}) {
+    this.title = title;
+    this.text = text;
+    this.author = author;
+  }
+
   Post.fromJson(Map<String, dynamic> json) {
     title = json['title'];
     text = json['text'];
@@ -23,4 +31,10 @@ class Post {
     created = DateTime.parse(json['created']);
     pk = json['pk'];
   }
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'text': text,
+        'author': author,
+      };
 }
