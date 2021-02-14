@@ -66,7 +66,7 @@ class PostCreateScreen extends HookWidget {
             TextField(
               controller: authorController,
               decoration: InputDecoration(
-                hintText: 'Autor',
+                hintText: 'Autor (niekoniecznie)',
                 contentPadding: DEFAULT_TEXTFIELD_INSETS,
               ),
             ),

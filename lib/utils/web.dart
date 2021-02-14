@@ -1,3 +1,5 @@
+const API_ROOT = '/api/v1';
+
 Uri buildServerUrl(String host, String path,
     {Map<String, dynamic> params, bool secure = true}) {
   if (params == null) {
@@ -10,6 +12,5 @@ Uri buildServerUrl(String host, String path,
 }
 
 String buildEndpointPath(String endpoint) {
-  const API_ROOT = '/api/v1';
   return [API_ROOT, endpoint].join('/');
 }

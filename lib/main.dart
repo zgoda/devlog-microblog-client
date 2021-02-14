@@ -7,7 +7,7 @@ import 'package:devlog_microblog_client/pages/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     const ProviderScope(child: MicroblogApp()),
@@ -15,9 +15,7 @@ Future<void> main() async {
 }
 
 class MicroblogApp extends StatelessWidget {
-  const MicroblogApp({
-    Key key,
-  }) : super(key: key);
+  const MicroblogApp({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

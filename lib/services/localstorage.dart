@@ -45,7 +45,7 @@ class UserPrefsNotifier extends StateNotifier<UserSettingsModel> {
 
   set credentials(Credentials credentials) {
     final newModel = UserSettingsModel.copyFrom(state);
-    newModel.setCredentials(credentials.name, credentials.password);
+    newModel.setCredentials(credentials: credentials);
     state = newModel;
     newModel.save();
   }

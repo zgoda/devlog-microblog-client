@@ -101,17 +101,17 @@ class UserSettingsModel {
     return model;
   }
 
-  void setCredentials(String username, String password) {
-    this.username = username;
-    this.password = password;
+  void setCredentials({@required Credentials credentials}) {
+    this.username = credentials.name;
+    this.password = credentials.password;
   }
 
-  void saveCredentials(String username, String password) {
+  void saveCredentials({@required Credentials credentials}) {
     if (storeCredentials) {
       final FlutterSecureStorage securePrefs = FlutterSecureStorage();
       try {
-        securePrefs.write(key: 'username', value: username);
-        securePrefs.write(key: 'password', value: password);
+        securePrefs.write(key: 'username', value: credentials.name);
+        securePrefs.write(key: 'password', value: credentials.password);
       } catch (e) {
         securePrefs.deleteAll();
       }
@@ -129,6 +129,8 @@ class UserSettingsModel {
     prefs.setBool('storeCredentials', storeCredentials);
     prefs.setString('host', host);
     prefs.setString('defaultAuthor', defaultAuthor);
-    saveCredentials(username, password);
+    saveCredentials(
+      credentials: Credentials(name: username, password: password),
+    );
   }
 }

@@ -138,6 +138,7 @@ class AppConfigWizard extends HookWidget {
       ),
     ];
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Ustawienia aplikacji'),
       ),

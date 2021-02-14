@@ -46,8 +46,10 @@ class MicroblogEntryItem extends StatelessWidget {
           ],
         ),
       ),
-      onTap: () =>
-          Navigator.of(context).pushNamed('/post/edit', arguments: post),
+      onTap: () => Navigator.of(context).pushNamed(
+        '/post/edit',
+        arguments: post,
+      ),
     );
   }
 }
@@ -82,8 +84,9 @@ class MicroblogEntryList extends HookWidget {
     });
     return ListView.builder(
       padding: EdgeInsets.all(8),
-      itemBuilder: (_, int index) =>
-          MicroblogEntryItem(post: postListModel[index]),
+      itemBuilder: (_, int index) => MicroblogEntryItem(
+        post: postListModel[index],
+      ),
       itemCount: postListModel.length,
     );
   }
