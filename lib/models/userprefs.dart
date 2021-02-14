@@ -52,53 +52,29 @@ class UserSettingsModel {
   @override
   int get hashCode => host.hashCode + unsecuredTransport.hashCode;
 
-  static Future<UserSettingsModel> whenReady(
-      Future<SharedPreferences> future) async {
-    final prefs = await future;
-    final unsecuredTransport = prefs.getBool('unsecuredTransport') ?? false;
-    final storeCredentials = prefs.getBool('storeCredentials') ?? true;
-    final host = prefs.getString('host');
-    final defaultAuthor = prefs.getString('defaultAuthor');
-    final model = UserSettingsModel(
-      unsecuredTransport,
-      storeCredentials,
-      host,
-      defaultAuthor,
-      '',
-      '',
-    );
-    final FlutterSecureStorage securePrefs = FlutterSecureStorage();
-    try {
-      model.username = await securePrefs.read(key: 'username');
-      model.password = await securePrefs.read(key: 'password');
-    } catch (e) {
-      securePrefs.deleteAll();
-    }
-    return model;
-  }
-
   static Future<UserSettingsModel> load() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final unsecuredTransport = prefs.getBool('unsecuredTransport') ?? false;
     final storeCredentials = prefs.getBool('storeCredentials') ?? true;
     final host = prefs.getString('host');
     final defaultAuthor = prefs.getString('defaultAuthor');
-    final model = UserSettingsModel(
+    var username = '';
+    var password = '';
+    final FlutterSecureStorage securePrefs = FlutterSecureStorage();
+    try {
+      username = await securePrefs.read(key: 'username');
+      password = await securePrefs.read(key: 'password');
+    } catch (e) {
+      await securePrefs.deleteAll();
+    }
+    return UserSettingsModel(
       unsecuredTransport,
       storeCredentials,
       host,
       defaultAuthor,
-      '',
-      '',
+      username,
+      password,
     );
-    final FlutterSecureStorage securePrefs = FlutterSecureStorage();
-    try {
-      model.username = await securePrefs.read(key: 'username');
-      model.password = await securePrefs.read(key: 'password');
-    } catch (e) {
-      securePrefs.deleteAll();
-    }
-    return model;
   }
 
   void setCredentials({@required Credentials credentials}) {
@@ -106,14 +82,14 @@ class UserSettingsModel {
     this.password = credentials.password;
   }
 
-  void saveCredentials({@required Credentials credentials}) {
+  Future<void> saveCredentials({@required Credentials credentials}) async {
     if (storeCredentials) {
       final FlutterSecureStorage securePrefs = FlutterSecureStorage();
       try {
-        securePrefs.write(key: 'username', value: credentials.name);
-        securePrefs.write(key: 'password', value: credentials.password);
+        await securePrefs.write(key: 'username', value: credentials.name);
+        await securePrefs.write(key: 'password', value: credentials.password);
       } catch (e) {
-        securePrefs.deleteAll();
+        await securePrefs.deleteAll();
       }
     }
   }
@@ -125,11 +101,11 @@ class UserSettingsModel {
 
   Future<void> save() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('unsecuredTransport', unsecuredTransport);
-    prefs.setBool('storeCredentials', storeCredentials);
-    prefs.setString('host', host);
-    prefs.setString('defaultAuthor', defaultAuthor);
-    saveCredentials(
+    await prefs.setBool('unsecuredTransport', unsecuredTransport);
+    await prefs.setBool('storeCredentials', storeCredentials);
+    await prefs.setString('host', host);
+    await prefs.setString('defaultAuthor', defaultAuthor);
+    await saveCredentials(
       credentials: Credentials(name: username, password: password),
     );
   }
