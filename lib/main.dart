@@ -5,6 +5,7 @@ import 'package:devlog_microblog_client/pages/edit_post.dart';
 import 'package:devlog_microblog_client/pages/new_post.dart';
 import 'package:devlog_microblog_client/pages/settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 void main() {
@@ -21,6 +22,14 @@ class MicroblogApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Microblog w Devlogu',
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('pl', ''),
+      ],
       home: LoadingScreen(),
       routes: <String, WidgetBuilder>{
         '/post/edit': (BuildContext context) => PostEditScreen(),
