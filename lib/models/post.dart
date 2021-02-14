@@ -8,15 +8,6 @@ class Post {
   DateTime created;
   int pk;
 
-  Post({
-    this.pk,
-    this.title,
-    this.text,
-    this.author,
-    this.textHtml,
-    this.created,
-  });
-
   Post.createNew({@required String text, String author, String title}) {
     this.title = title;
     this.text = text;
@@ -28,7 +19,7 @@ class Post {
     text = json['text'];
     author = json['author'];
     textHtml = json['textHtml'];
-    created = DateTime.parse(json['created']);
+    created = DateTime.parse(json['created']).toLocal();
     pk = json['pk'];
   }
 
