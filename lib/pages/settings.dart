@@ -19,16 +19,6 @@ class SettingsScreen extends HookWidget {
     );
     final unsecuredTransport = useState(settings.unsecuredTransport);
     final storeCredentials = useState(settings.storeCredentials);
-    final unsecuredTransportSwitch = userPrefsSwitch(
-      'Transfer bez SSL',
-      unsecuredTransport.value,
-      (value) => unsecuredTransport.value = value,
-    );
-    final storeCredentialsSwitch = userPrefsSwitch(
-      'Zapisz dane logowania',
-      storeCredentials.value,
-      (value) => storeCredentials.value = value,
-    );
     return Scaffold(
       appBar: AppBar(
         title: Text('Ustawienia aplikacji'),
@@ -75,8 +65,16 @@ class SettingsScreen extends HookWidget {
               controller: defaultAuthorController,
             ),
             DEFAULT_FIELD_SPACER,
-            unsecuredTransportSwitch,
-            storeCredentialsSwitch,
+            UserPrefsSwitch(
+              title: 'Transfer bez SSL',
+              initialValue: unsecuredTransport.value,
+              onChanged: (value) => unsecuredTransport.value = value,
+            ),
+            UserPrefsSwitch(
+              title: 'Zapisz dane logowania',
+              initialValue: storeCredentials.value,
+              onChanged: (value) => storeCredentials.value = value,
+            ),
           ],
         ),
       ),

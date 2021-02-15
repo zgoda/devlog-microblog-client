@@ -67,10 +67,10 @@ class AppConfigWizard extends HookWidget {
                 contentPadding: EdgeInsets.all(10),
               ),
             ),
-            userPrefsSwitch(
-              'Transfer bez SSL',
-              insecureTransfer.value,
-              (value) => insecureTransfer.value = value,
+            UserPrefsSwitch(
+              title: 'Transfer bez SSL',
+              initialValue: insecureTransfer.value,
+              onChanged: (value) => insecureTransfer.value = value,
             ),
           ],
         ),
@@ -81,10 +81,10 @@ class AppConfigWizard extends HookWidget {
         isActive: true,
         content: Column(
           children: <Widget>[
-            userPrefsSwitch(
-              'Zapisuj dane logowania',
-              storeCredentials.value,
-              (value) => storeCredentials.value = value,
+            UserPrefsSwitch(
+              title: 'Zapisuj dane logowania',
+              initialValue: storeCredentials.value,
+              onChanged: (value) => storeCredentials.value = value,
             ),
             TextFormField(
               controller: userNameController,

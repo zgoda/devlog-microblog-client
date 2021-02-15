@@ -39,14 +39,18 @@ class ServerStatusIcon extends HookWidget {
   }
 }
 
-SwitchListTile userPrefsSwitch(
-  String title,
-  bool initialValue,
-  void Function(bool) onChanged,
-) {
-  return SwitchListTile(
-    value: initialValue,
-    onChanged: onChanged,
-    title: Text(title),
-  );
+class UserPrefsSwitch extends StatelessWidget {
+  final String title;
+  final bool initialValue;
+  final void Function(bool) onChanged;
+  UserPrefsSwitch({this.title, this.initialValue, this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return SwitchListTile(
+      value: initialValue,
+      onChanged: onChanged,
+      title: Text(title),
+    );
+  }
 }
