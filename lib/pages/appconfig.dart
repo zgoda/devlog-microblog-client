@@ -11,6 +11,7 @@ class AppConfigWizard extends HookWidget {
     Icon icon;
     String message;
     String state;
+    final errorIcon = Icon(Icons.lightbulb, color: Colors.red);
     switch (status) {
       case AuthResult.none:
         icon = Icon(Icons.lightbulb_outline);
@@ -18,26 +19,17 @@ class AppConfigWizard extends HookWidget {
         state = 'Brak danych';
         break;
       case AuthResult.ok:
-        icon = Icon(
-          Icons.lightbulb,
-          color: Colors.green,
-        );
+        icon = Icon(Icons.lightbulb, color: Colors.green);
         message = 'Wszystko gra';
         state = 'OK';
         break;
       case AuthResult.networkError:
-        icon = Icon(
-          Icons.lightbulb,
-          color: Colors.red,
-        );
+        icon = errorIcon;
         message = 'Serwer nie odpowiada';
         state = 'Błąd';
         break;
       case AuthResult.clientError:
-        icon = Icon(
-          Icons.lightbulb,
-          color: Colors.red,
-        );
+        icon = errorIcon;
         message = 'Nieprawidłowe dane logowania';
         state = 'Błąd';
         break;
@@ -98,6 +90,7 @@ class AppConfigWizard extends HookWidget {
               controller: userNameController,
               decoration: InputDecoration(
                 labelText: 'Nazwa',
+                hintText: 'Nazwa konta użytkownika',
                 contentPadding: EdgeInsets.all(10),
               ),
             ),
@@ -106,6 +99,7 @@ class AppConfigWizard extends HookWidget {
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Hasło',
+                hintText: 'Hasło do konta użytkownika',
                 contentPadding: EdgeInsets.all(10),
               ),
             )
