@@ -7,42 +7,68 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+class PostMetaInfo extends StatelessWidget {
+  final DateTime date;
+  PostMetaInfo({this.date});
+
+  @override
+  Widget build(BuildContext context) {
+    final day = date.day.toString().padLeft(2, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final year = date.year.toString();
+    final h6 = Theme.of(context).textTheme.headline6;
+    return Container(
+      margin: EdgeInsets.only(right: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text('$day.$month', style: h6),
+          SizedBox(height: 4),
+          Text(year, style: h6)
+        ],
+      ),
+    );
+  }
+}
+
+class PostTextInfo extends StatelessWidget {
+  final String text;
+  final String title;
+  PostTextInfo({this.text, this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> children = [];
+    if (![null, ''].contains(title)) {
+      children.add(Text(title, style: Theme.of(context).textTheme.headline6));
+    }
+    children.addAll([
+      SizedBox(height: 6),
+      MarkdownBody(data: text),
+    ]);
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+  }
+}
+
 class MicroblogEntryItem extends StatelessWidget {
   final Post post;
   MicroblogEntryItem({this.post});
 
   @override
   Widget build(BuildContext context) {
-    final dayStr = post.created.day.toString().padLeft(2, '0');
-    final mthStr = post.created.month.toString().padLeft(2, '0');
-    final dateFormatted = '$dayStr.$mthStr';
-    final h6 = Theme.of(context).textTheme.headline6;
     return InkWell(
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 10),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(right: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(dateFormatted, style: h6),
-                  Text(post.created.year.toString(), style: h6)
-                ],
-              ),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(post.title ?? '', style: h6),
-                  MarkdownBody(data: post.text),
-                ],
-              ),
-            ),
+            PostMetaInfo(date: post.created),
+            PostTextInfo(text: post.text, title: post.title),
           ],
         ),
       ),

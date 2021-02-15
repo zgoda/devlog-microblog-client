@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PostEditScreen extends StatelessWidget {
+class PostEditScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final Post post = ModalRoute.of(context).settings.arguments;
@@ -20,7 +20,11 @@ class PostEditScreen extends StatelessWidget {
         actions: <Widget>[
           TextButton(
             onPressed: () async {
-              final newPost = Post.copyFrom(post);
+              final newPost = Post.createNew(
+                text: textController.text.trim(),
+                title: titleController.text.trim(),
+                author: authorController.text.trim(),
+              );
               newPost.pk = post.pk;
               await postService.updatePost(newPost);
               ScaffoldMessenger.of(context).showSnackBar(

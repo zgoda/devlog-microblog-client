@@ -14,12 +14,6 @@ class Post {
     this.author = author;
   }
 
-  Post.copyFrom(Post other) {
-    title = other.title;
-    text = other.text;
-    author = other.author;
-  }
-
   Post.fromJson(Map<String, dynamic> json) {
     title = json['title'];
     text = json['text'];

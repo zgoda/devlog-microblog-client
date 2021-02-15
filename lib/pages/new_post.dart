@@ -22,9 +22,9 @@ class PostCreateScreen extends HookWidget {
           TextButton(
             onPressed: () async {
               final post = Post.createNew(
-                text: textController.text,
-                title: titleController.text,
-                author: authorController.text,
+                text: textController.text.trim(),
+                title: titleController.text.trim(),
+                author: authorController.text.trim(),
               );
               await postService.addPost(post);
               ScaffoldMessenger.of(context).showSnackBar(
