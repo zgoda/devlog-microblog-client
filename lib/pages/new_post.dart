@@ -49,8 +49,10 @@ class PostCreateScreen extends HookWidget {
               autofocus: true,
               maxLines: null,
               minLines: 8,
+              keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
-                hintText: 'Treść',
+                labelText: 'Treść',
+                hintText: 'Treść posta',
                 contentPadding: DEFAULT_TEXTFIELD_INSETS,
               ),
             ),
@@ -58,7 +60,8 @@ class PostCreateScreen extends HookWidget {
             TextField(
               controller: titleController,
               decoration: InputDecoration(
-                hintText: 'Tytuł (niekoniecznie)',
+                labelText: 'Tytuł',
+                hintText: 'Tytuł posta (niekoniecznie)',
                 contentPadding: DEFAULT_TEXTFIELD_INSETS,
               ),
             ),
@@ -66,7 +69,8 @@ class PostCreateScreen extends HookWidget {
             TextField(
               controller: authorController,
               decoration: InputDecoration(
-                hintText: 'Autor (niekoniecznie)',
+                labelText: 'Autor',
+                hintText: 'Autor posta (niekoniecznie)',
                 contentPadding: DEFAULT_TEXTFIELD_INSETS,
               ),
             ),
