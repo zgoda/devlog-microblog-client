@@ -1,6 +1,7 @@
 import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/auth.dart';
-import 'package:devlog_microblog_client/services/localstorage.dart';
+import 'package:devlog_microblog_client/viewmodels/credentials.dart';
+import 'package:devlog_microblog_client/viewmodels/userprefs.dart';
 import 'package:devlog_microblog_client/widgets/misc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -51,7 +52,8 @@ class AppConfigWizard extends HookWidget {
     final userNameController = useTextEditingController();
     final passwordController = useTextEditingController();
     final verificationStatus = useState(AuthResult.none);
-    final prefs = useProvider(userPrefsProvider);
+    final prefs = useProvider(userPrefsViewModelProvider);
+    final credentials = useProvider(credentialsViewModelProvider);
     final steps = <Step>[
       Step(
         title: const Text('Serwer'),
@@ -147,14 +149,18 @@ class AppConfigWizard extends HookWidget {
                 if (currentStep.value < steps.length - 1) {
                   currentStep.value = currentStep.value + 1;
                 } else {
-                  prefs.update(
-                    UserPrefs(
-                      insecureTransfer.value,
-                      storeCredentials.value,
-                      hostController.text,
-                      userNameController.text,
-                      userNameController.text,
-                      passwordController.text,
+                  prefs.updatePrefs(
+                    AppPrefs(
+                      insecureTransport: insecureTransfer.value,
+                      storeCredentials: storeCredentials.value,
+                      host: hostController.text,
+                      defaulAuthor: userNameController.text,
+                    ),
+                  );
+                  credentials.updateCredentials(
+                    Credentials(
+                      name: userNameController.text,
+                      password: passwordController.text,
                     ),
                   );
                   ScaffoldMessenger.of(context).showSnackBar(
