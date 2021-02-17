@@ -37,7 +37,7 @@ class ServerStatusService {
   final Duration _interval = Duration(seconds: 15);
   var _stopStream = false;
 
-  ServerStatusService(UserSettingsModel prefs) {
+  ServerStatusService(UserPrefs prefs) {
     _url = buildServerUrl(
       prefs.host,
       buildEndpointPath(ENDPOINT),

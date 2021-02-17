@@ -23,10 +23,10 @@ final credentialsProvider = Provider<Credentials>((ref) {
 
 final userPrefsProvider = StateNotifierProvider((ref) => UserPrefsNotifier());
 
-class UserPrefsNotifier extends StateNotifier<UserSettingsModel> {
-  UserPrefsNotifier() : super(UserSettingsModel.empty());
+class UserPrefsNotifier extends StateNotifier<UserPrefs> {
+  UserPrefsNotifier() : super(UserPrefs.empty());
 
-  void update(UserSettingsModel prefs) {
+  void update(UserPrefs prefs) {
     state = prefs;
     prefs.save();
   }
@@ -44,7 +44,7 @@ class UserPrefsNotifier extends StateNotifier<UserSettingsModel> {
   }
 
   set credentials(Credentials credentials) {
-    final newModel = UserSettingsModel.copyFrom(state);
+    final newModel = UserPrefs.copyFrom(state);
     newModel.setCredentials(credentials: credentials);
     state = newModel;
     newModel.save();
@@ -55,7 +55,7 @@ class UserPrefsNotifier extends StateNotifier<UserSettingsModel> {
   }
 }
 
-final settingsProvider = FutureProvider<UserSettingsModel>((ref) async {
+final settingsProvider = FutureProvider<UserPrefs>((ref) async {
   final localStorageService = await LocalStorageService.create();
   final settings = localStorageService.settings;
   final prefsNotifier = ref.watch(userPrefsProvider);
@@ -64,7 +64,7 @@ final settingsProvider = FutureProvider<UserSettingsModel>((ref) async {
 });
 
 class LocalStorageService {
-  UserSettingsModel _settings;
+  UserPrefs _settings;
 
   static Future<LocalStorageService> create() async {
     final instance = LocalStorageService();
@@ -73,10 +73,10 @@ class LocalStorageService {
   }
 
   Future<void> _loadUserPrefs() async {
-    _settings = await UserSettingsModel.load();
+    _settings = await UserPrefs.load();
   }
 
-  UserSettingsModel get settings {
+  UserPrefs get settings {
     return _settings;
   }
 }

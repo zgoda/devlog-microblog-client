@@ -148,7 +148,7 @@ class AppConfigWizard extends HookWidget {
                   currentStep.value = currentStep.value + 1;
                 } else {
                   prefs.update(
-                    UserSettingsModel(
+                    UserPrefs(
                       insecureTransfer.value,
                       storeCredentials.value,
                       hostController.text,

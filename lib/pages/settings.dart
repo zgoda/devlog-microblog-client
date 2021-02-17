@@ -28,7 +28,7 @@ class SettingsScreen extends HookWidget {
               primary: Theme.of(context).dialogBackgroundColor,
             ),
             onPressed: () {
-              settingsNotifier.update(UserSettingsModel(
+              settingsNotifier.update(UserPrefs(
                 unsecuredTransport.value,
                 storeCredentials.value,
                 hostController.text,

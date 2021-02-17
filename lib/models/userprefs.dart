@@ -1,8 +1,9 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class Credentials {
+class Credentials extends Equatable {
   final String name;
   final String password;
 
@@ -10,9 +11,34 @@ class Credentials {
       : this.name = name,
         this.password = password,
         super();
+
+  @override
+  List<Object> get props => [name, password];
 }
 
-class UserSettingsModel {
+class AppPrefs extends Equatable {
+  final String host;
+  final bool storeCredentials;
+  final bool insecureTransport;
+  final String defaultAuthor;
+
+  AppPrefs(
+      {@required String host,
+      String defaulAuthor,
+      bool storeCredentials = true,
+      bool insecureTransport = false})
+      : this.host = host,
+        this.defaultAuthor = defaulAuthor,
+        this.storeCredentials = storeCredentials,
+        this.insecureTransport = insecureTransport,
+        super();
+
+  @override
+  List<Object> get props =>
+      [host, storeCredentials, insecureTransport, defaultAuthor];
+}
+
+class UserPrefs {
   final bool unsecuredTransport;
   bool storeCredentials;
   final String host;
@@ -20,7 +46,7 @@ class UserSettingsModel {
   String username;
   String password;
 
-  UserSettingsModel(
+  UserPrefs(
     this.unsecuredTransport,
     this.storeCredentials,
     this.host,
@@ -29,9 +55,9 @@ class UserSettingsModel {
     this.password,
   );
 
-  UserSettingsModel.empty() : this(false, true, '', '', '', '');
+  UserPrefs.empty() : this(false, true, '', '', '', '');
 
-  UserSettingsModel.copyFrom(UserSettingsModel other)
+  UserPrefs.copyFrom(UserPrefs other)
       : this(
           other.unsecuredTransport,
           other.storeCredentials,
@@ -44,7 +70,7 @@ class UserSettingsModel {
   @override
   bool operator ==(Object other) =>
       identical(this, other) &&
-      other is UserSettingsModel &&
+      other is UserPrefs &&
       runtimeType == other.runtimeType &&
       unsecuredTransport == other.unsecuredTransport &&
       host == other.host;
@@ -52,7 +78,7 @@ class UserSettingsModel {
   @override
   int get hashCode => host.hashCode + unsecuredTransport.hashCode;
 
-  static Future<UserSettingsModel> load() async {
+  static Future<UserPrefs> load() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final unsecuredTransport = prefs.getBool('unsecuredTransport') ?? false;
     final storeCredentials = prefs.getBool('storeCredentials') ?? true;
@@ -67,7 +93,7 @@ class UserSettingsModel {
     } catch (e) {
       await securePrefs.deleteAll();
     }
-    return UserSettingsModel(
+    return UserPrefs(
       unsecuredTransport,
       storeCredentials,
       host,

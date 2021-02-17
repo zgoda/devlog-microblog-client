@@ -52,7 +52,7 @@ class PostService {
   AuthenticationService _auth;
   PostListNotifier _notifier;
 
-  PostService(UserSettingsModel prefs, AuthenticationService auth) {
+  PostService(UserPrefs prefs, AuthenticationService auth) {
     _host = prefs.host;
     _useHttps = !prefs.unsecuredTransport;
     _collectionUrl = buildServerUrl(
