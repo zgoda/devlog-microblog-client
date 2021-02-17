@@ -154,7 +154,7 @@ class AppConfigWizard extends HookWidget {
                       insecureTransport: insecureTransfer.value,
                       storeCredentials: storeCredentials.value,
                       host: hostController.text,
-                      defaulAuthor: userNameController.text,
+                      defaultAuthor: userNameController.text,
                     ),
                   );
                   credentials.updateCredentials(

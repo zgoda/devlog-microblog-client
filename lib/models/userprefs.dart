@@ -28,11 +28,11 @@ class AppPrefs extends Equatable {
 
   AppPrefs({
     @required String host,
-    String defaulAuthor,
+    String defaultAuthor,
     bool storeCredentials = true,
     bool insecureTransport = false,
   })  : this.host = host,
-        this.defaultAuthor = defaulAuthor,
+        this.defaultAuthor = defaultAuthor,
         this.storeCredentials = storeCredentials,
         this.insecureTransport = insecureTransport,
         super();

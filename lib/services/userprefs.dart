@@ -17,7 +17,7 @@ class UserPrefsService {
   AppPrefs get prefs {
     return AppPrefs(
       host: _storage.getString(_hostKey) ?? '',
-      defaulAuthor: _storage.getString(_defaultAuthorKey) ?? '',
+      defaultAuthor: _storage.getString(_defaultAuthorKey) ?? '',
       insecureTransport: _storage.getBool(_insecureTransportKey) ?? false,
       storeCredentials: _storage.getBool(_storeCredentialsKey) ?? true,
     );
