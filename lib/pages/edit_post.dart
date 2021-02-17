@@ -20,12 +20,12 @@ class PostEditScreen extends HookWidget {
         actions: <Widget>[
           TextButton(
             onPressed: () async {
-              final newPost = Post.createNew(
+              final newPost = Post(
                 text: textController.text.trim(),
                 title: titleController.text.trim(),
                 author: authorController.text.trim(),
+                pk: post.pk,
               );
-              newPost.pk = post.pk;
               await postService.updatePost(newPost);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Aktualizacja posta została wysłana')),

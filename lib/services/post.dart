@@ -80,7 +80,7 @@ class PostService {
     if (resp.statusCode == 200) {
       final respData = jsonDecode(resp.body);
       posts.addAll(
-        respData['quips'].map<Post>((item) => Post.fromJson(item)).toList(),
+        respData['quips'].map<Post>((item) => Post.fromMap(item)).toList(),
       );
       _currentPage = page;
     }
@@ -91,27 +91,27 @@ class PostService {
   }
 
   Future<void> addPost(Post post) async {
-    final requestBody = jsonEncode(post.toJson());
+    final requestBody = jsonEncode(post.toMap());
     await _auth.login();
     final headers = _auth.authHeader();
     headers['Content-Type'] = 'application/json';
     final resp =
         await _http.post(_collectionUrl, headers: headers, body: requestBody);
     if (resp.statusCode < 300) {
-      final newPost = Post.fromJson(jsonDecode(resp.body)['quip']);
+      final newPost = Post.fromMap(jsonDecode(resp.body)['quip']);
       _notifier.add(newPost);
     }
   }
 
   Future<void> updatePost(Post post) async {
     final url = _itemUrl(post);
-    final requestBody = jsonEncode(post.toJson());
+    final requestBody = jsonEncode(post.toMap());
     await _auth.login();
     final headers = _auth.authHeader();
     headers['Content-Type'] = 'application/json';
     final resp = await _http.put(url, headers: headers, body: requestBody);
     if (resp.statusCode < 300) {
-      final newPost = Post.fromJson(jsonDecode(resp.body)['quip']);
+      final newPost = Post.fromMap(jsonDecode(resp.body)['quip']);
       _notifier.update(newPost);
     }
   }

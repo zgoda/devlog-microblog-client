@@ -21,7 +21,7 @@ class PostCreateScreen extends HookWidget {
         actions: <Widget>[
           TextButton(
             onPressed: () async {
-              final post = Post.createNew(
+              final post = Post(
                 text: textController.text.trim(),
                 title: titleController.text.trim(),
                 author: authorController.text.trim(),
