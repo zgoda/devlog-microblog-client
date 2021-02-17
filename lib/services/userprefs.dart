@@ -4,8 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserPrefsService {
   final SharedPreferences _storage;
 
-  UserPrefsService(SharedPreferences storage)
-      : this._storage = storage,
+  UserPrefsService(
+    SharedPreferences storage,
+  )   : this._storage = storage,
         super();
 
   static const _hostKey = 'host';

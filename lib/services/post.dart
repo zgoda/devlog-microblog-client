@@ -46,8 +46,8 @@ class PostService {
   bool _useHttps;
   String _host;
 
-  static const COLLECTION_ENDPOINT = 'quips';
-  static const ITEM_ENDPOINT = 'quip';
+  static const _collectionEndpoint = 'quips';
+  static const _itemEndpoint = 'quip';
 
   AuthenticationService _auth;
   PostListNotifier _notifier;
@@ -57,7 +57,7 @@ class PostService {
     _useHttps = !prefs.unsecuredTransport;
     _collectionUrl = buildServerUrl(
       _host,
-      buildEndpointPath(COLLECTION_ENDPOINT),
+      buildEndpointPath(_collectionEndpoint),
       secure: _useHttps,
     );
     _auth = auth;
@@ -67,7 +67,7 @@ class PostService {
 
   Uri _itemUrl(Post post) {
     final path =
-        [buildEndpointPath(ITEM_ENDPOINT), post.pk.toString()].join('/');
+        [buildEndpointPath(_itemEndpoint), post.pk.toString()].join('/');
     return buildServerUrl(_host, path, secure: _useHttps);
   }
 

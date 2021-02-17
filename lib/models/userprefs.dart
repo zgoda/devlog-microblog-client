@@ -7,8 +7,10 @@ class Credentials extends Equatable {
   final String name;
   final String password;
 
-  Credentials({@required String name, @required String password})
-      : this.name = name,
+  Credentials({
+    @required String name,
+    @required String password,
+  })  : this.name = name,
         this.password = password,
         super();
 
@@ -22,12 +24,12 @@ class AppPrefs extends Equatable {
   final bool insecureTransport;
   final String defaultAuthor;
 
-  AppPrefs(
-      {@required String host,
-      String defaulAuthor,
-      bool storeCredentials = true,
-      bool insecureTransport = false})
-      : this.host = host,
+  AppPrefs({
+    @required String host,
+    String defaulAuthor,
+    bool storeCredentials = true,
+    bool insecureTransport = false,
+  })  : this.host = host,
         this.defaultAuthor = defaulAuthor,
         this.storeCredentials = storeCredentials,
         this.insecureTransport = insecureTransport,
