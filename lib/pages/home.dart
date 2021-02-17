@@ -1,11 +1,8 @@
 import 'package:devlog_microblog_client/widgets/misc.dart';
 import 'package:devlog_microblog_client/widgets/post.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
-class HomeScreen extends HookWidget {
-  HomeScreen({Key key}) : super(key: key);
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

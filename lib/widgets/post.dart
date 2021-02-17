@@ -81,8 +81,6 @@ class MicroblogEntryItem extends StatelessWidget {
 }
 
 class MicroblogEntryList extends HookWidget {
-  MicroblogEntryList({Key key}) : super(key: key);
-
   Future<int> _fetchPostsPage(int curPage, PostService service) async {
     return await service.fetchCollection(page: curPage + 1);
   }

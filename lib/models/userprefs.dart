@@ -16,6 +16,8 @@ class Credentials extends Equatable {
 
   @override
   List<Object> get props => [name, password];
+
+  bool get isValid => !['', null].contains(name) && password != null;
 }
 
 class AppPrefs extends Equatable {
@@ -38,6 +40,8 @@ class AppPrefs extends Equatable {
   @override
   List<Object> get props =>
       [host, storeCredentials, insecureTransport, defaultAuthor];
+
+  bool get isConfigured => !['', null].contains(host);
 }
 
 class UserPrefs {
