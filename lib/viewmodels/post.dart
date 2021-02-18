@@ -8,7 +8,7 @@ final postCollectionViewModelProvider =
 class PostCollectionNotifier extends StateNotifier<List<Post>> {
   PostCollectionNotifier() : super([]);
 
-  void add(Post post) => state = [...state, post];
+  void add(Post post) => state = [post, ...state];
 
   void update(Post post) {
     final posts = [...state];
@@ -17,6 +17,7 @@ class PostCollectionNotifier extends StateNotifier<List<Post>> {
         item = post;
       }
     });
+    state = posts;
   }
 
   void addAll(List<Post> posts) => state = [...state, ...posts];

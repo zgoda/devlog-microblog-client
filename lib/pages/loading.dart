@@ -1,9 +1,7 @@
 import 'package:devlog_microblog_client/pages/appconfig.dart';
 import 'package:devlog_microblog_client/pages/home.dart';
 import 'package:devlog_microblog_client/pages/login.dart';
-import 'package:devlog_microblog_client/providers.dart';
-import 'package:devlog_microblog_client/services/credentials.dart';
-import 'package:devlog_microblog_client/services/userprefs.dart';
+import 'package:devlog_microblog_client/viewmodels/appsettings.dart';
 import 'package:devlog_microblog_client/viewmodels/credentials.dart';
 import 'package:devlog_microblog_client/viewmodels/userprefs.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class LoadingScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final securePrefs = useProvider(securePrefsProvider);
-    final sharedPrefsData = useProvider(sharedPrefsProvider);
+    final appSettingsInitialized = useProvider(appSettingsInitializer);
     final credentialsVM = useProvider(credentialsViewModelProvider);
     final userPrefsVM = useProvider(userPrefsViewModelProvider);
     Widget result = Scaffold(
@@ -22,9 +19,7 @@ class LoadingScreen extends HookWidget {
         child: CircularProgressIndicator(),
       ),
     );
-    sharedPrefsData.whenData((sharedPrefs) {
-      credentialsVM.init(CredentialsService(securePrefs));
-      userPrefsVM.init(UserPrefsService(sharedPrefs));
+    appSettingsInitialized.whenData((_) {
       if (userPrefsVM.prefs.isConfigured) {
         if (!credentialsVM.credentials.isValid) {
           result = LoginScreen();

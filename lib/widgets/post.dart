@@ -93,6 +93,7 @@ class MicroblogEntryList extends HookWidget {
     final credentialsVM = useProvider(credentialsViewModelProvider);
     final postService = useProvider(postServiceProvider);
     final postCollectionVM = useProvider(postCollectionViewModelProvider);
+    final postCollection = useProvider(postCollectionViewModelProvider.state);
     useMemoized(() async {
       if (settingsVM.prefs.isConfigured && credentialsVM.credentials.isValid) {
         final posts = await _fetchPostsPage(curPage.value, postService);
@@ -105,9 +106,9 @@ class MicroblogEntryList extends HookWidget {
     return ListView.builder(
       padding: EdgeInsets.all(8),
       itemBuilder: (_, int index) => MicroblogEntryItem(
-        post: postCollectionVM.posts[index],
+        post: postCollection[index],
       ),
-      itemCount: postCollectionVM.posts.length,
+      itemCount: postCollection.length,
     );
   }
 }
