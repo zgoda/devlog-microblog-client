@@ -119,9 +119,9 @@ class AppConfigWizard extends HookWidget {
               child: Text('Sprawdź'),
               onPressed: () async {
                 final svc = AuthenticationService(
-                  hostController.text,
-                  !insecureTransfer.value,
-                  Credentials(
+                  host: hostController.text,
+                  secure: !insecureTransfer.value,
+                  credentials: Credentials(
                     name: userNameController.text,
                     password: passwordController.text,
                   ),
