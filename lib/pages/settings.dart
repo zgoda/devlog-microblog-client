@@ -1,24 +1,23 @@
 import 'package:devlog_microblog_client/models/userprefs.dart';
-import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/utils/forms.dart';
+import 'package:devlog_microblog_client/viewmodels/userprefs.dart';
 import 'package:devlog_microblog_client/widgets/misc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SettingsScreen extends HookWidget {
-  SettingsScreen({Key key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    final settingsNotifier = useProvider(userPrefsProvider);
-    final settings = useProvider(userPrefsProvider.state);
-    final hostController = useTextEditingController(text: settings.host);
-    final defaultAuthorController = useTextEditingController(
-      text: settings.defaultAuthor,
+    final settingsVM = useProvider(userPrefsViewModelProvider);
+    final hostController = useTextEditingController(
+      text: settingsVM.prefs.host,
     );
-    final unsecuredTransport = useState(settings.unsecuredTransport);
-    final storeCredentials = useState(settings.storeCredentials);
+    final defaultAuthorController = useTextEditingController(
+      text: settingsVM.prefs.defaultAuthor,
+    );
+    final unsecuredTransport = useState(settingsVM.prefs.insecureTransport);
+    final storeCredentials = useState(settingsVM.prefs.storeCredentials);
     return Scaffold(
       appBar: AppBar(
         title: Text('Ustawienia aplikacji'),
@@ -28,13 +27,11 @@ class SettingsScreen extends HookWidget {
               primary: Theme.of(context).dialogBackgroundColor,
             ),
             onPressed: () {
-              settingsNotifier.update(UserPrefs(
-                unsecuredTransport.value,
-                storeCredentials.value,
-                hostController.text,
-                defaultAuthorController.text,
-                settings.username,
-                settings.password,
+              settingsVM.updatePrefs(AppPrefs(
+                insecureTransport: unsecuredTransport.value,
+                storeCredentials: storeCredentials.value,
+                host: hostController.text,
+                defaultAuthor: defaultAuthorController.text,
               ));
               Navigator.of(context).pop();
             },

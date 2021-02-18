@@ -1,7 +1,8 @@
 import 'package:devlog_microblog_client/models/post.dart';
-import 'package:devlog_microblog_client/services/auth.dart';
-import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/services/post.dart';
+import 'package:devlog_microblog_client/viewmodels/credentials.dart';
+import 'package:devlog_microblog_client/viewmodels/post.dart';
+import 'package:devlog_microblog_client/viewmodels/userprefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -81,39 +82,33 @@ class MicroblogEntryItem extends StatelessWidget {
 }
 
 class MicroblogEntryList extends HookWidget {
-  MicroblogEntryList({Key key}) : super(key: key);
-
-  Future<int> _fetchPostsPage(int curPage, PostService service) async {
+  Future<List<Post>> _fetchPostsPage(int curPage, PostService service) async {
     return await service.fetchCollection(page: curPage + 1);
   }
 
   @override
   Widget build(BuildContext context) {
     final curPage = useState(0);
-    final settings = useProvider(userPrefsProvider.state);
-    final auth = useProvider(authenticationServiceProvider);
-    final postService = useProvider(postCollectionServiceProvider);
-    final postListModel = useProvider(postListProvider.state);
+    final settingsVM = useProvider(userPrefsViewModelProvider);
+    final credentialsVM = useProvider(credentialsViewModelProvider);
+    final postService = useProvider(postServiceProvider);
+    final postCollectionVM = useProvider(postCollectionViewModelProvider);
+    final postCollection = useProvider(postCollectionViewModelProvider.state);
     useMemoized(() async {
-      if (settings.isConfigured()) {
-        var okResult;
-        if (settings.hasCredentials()) {
-          okResult = await auth.login() == AuthResult.ok;
-        } else {
-          okResult = await Navigator.of(context).pushNamed('/login');
-        }
-        if (okResult) {
-          final newPage = await _fetchPostsPage(curPage.value, postService);
-          curPage.value = newPage;
+      if (settingsVM.prefs.isConfigured && credentialsVM.credentials.isValid) {
+        final posts = await _fetchPostsPage(curPage.value, postService);
+        if (posts.isNotEmpty) {
+          postCollectionVM.addAll(posts);
+          curPage.value += 1;
         }
       }
     });
     return ListView.builder(
       padding: EdgeInsets.all(8),
       itemBuilder: (_, int index) => MicroblogEntryItem(
-        post: postListModel[index],
+        post: postCollection[index],
       ),
-      itemCount: postListModel.length,
+      itemCount: postCollection.length,
     );
   }
 }

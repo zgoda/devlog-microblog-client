@@ -1,7 +1,8 @@
 import 'package:devlog_microblog_client/models/post.dart';
-import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/services/post.dart';
 import 'package:devlog_microblog_client/utils/forms.dart';
+import 'package:devlog_microblog_client/viewmodels/post.dart';
+import 'package:devlog_microblog_client/viewmodels/userprefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,11 +10,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class PostCreateScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final defaultAuthor = useProvider(authorProvider);
+    final prefsVM = useProvider(userPrefsViewModelProvider);
     final textController = useTextEditingController();
     final titleController = useTextEditingController();
-    final authorController = useTextEditingController(text: defaultAuthor);
-    final postService = useProvider(postCollectionServiceProvider);
+    final authorController =
+        useTextEditingController(text: prefsVM.prefs.defaultAuthor);
+    final postService = useProvider(postServiceProvider);
+    final postCollectionVM = useProvider(postCollectionViewModelProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -26,10 +29,13 @@ class PostCreateScreen extends HookWidget {
                 title: titleController.text.trim(),
                 author: authorController.text.trim(),
               );
-              await postService.addPost(post);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Post został wysłany')),
-              );
+              final newPost = await postService.addPost(post);
+              if (newPost != null) {
+                postCollectionVM.add(newPost);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Post został wysłany')),
+                );
+              }
               Navigator.of(context).pop();
             },
             child: Text('Zapisz'),
