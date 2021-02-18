@@ -11,13 +11,13 @@ class PostCollectionNotifier extends StateNotifier<List<Post>> {
   void add(Post post) => state = [post, ...state];
 
   void update(Post post) {
-    final posts = [...state];
-    posts.forEach((item) {
-      if (item.pk == post.pk) {
-        item = post;
+    final posts = state.map((e) {
+      if (e.pk == post.pk) {
+        return post;
       }
+      return e;
     });
-    state = posts;
+    state = posts.toList();
   }
 
   void addAll(List<Post> posts) => state = [...state, ...posts];

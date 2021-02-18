@@ -30,7 +30,7 @@ class PostEditScreen extends HookWidget {
               );
               final updatedPost = await postService.updatePost(newPost);
               if (updatedPost != null) {
-                postCollectionVM.update(newPost);
+                postCollectionVM.update(updatedPost);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Aktualizacja posta została wysłana')),
                 );
