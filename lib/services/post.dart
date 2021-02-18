@@ -1,43 +1,10 @@
 import 'dart:convert';
 
 import 'package:devlog_microblog_client/models/post.dart';
-import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/auth.dart';
-import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/utils/web.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
-
-final postListProvider = StateNotifierProvider((ref) => PostListNotifier());
-
-class PostListNotifier extends StateNotifier<List<Post>> {
-  PostListNotifier() : super([]);
-
-  void add(Post post) {
-    state = [post, ...state];
-  }
-
-  void addAll(List<Post> posts) {
-    state = [...posts, ...state];
-  }
-
-  void update(Post post) {
-    final newState = [...state];
-    final postIndex = newState.indexWhere((item) => item.pk == post.pk);
-    if (postIndex > -1) {
-      newState[postIndex] = post;
-      state = newState;
-    }
-  }
-}
-
-final postCollectionServiceProvider = Provider<PostService>((ref) {
-  final prefs = ref.watch(userPrefsProvider.state);
-  final auth = ref.watch(authenticationServiceProvider);
-  final service = PostService(prefs, auth);
-  service.notifier = ref.read(postListProvider);
-  return service;
-});
 
 class PostService {
   Uri _collectionUrl;

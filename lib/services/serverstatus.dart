@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/utils/web.dart';
 import 'package:devlog_microblog_client/viewmodels/userprefs.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,7 +20,7 @@ final serverStatusProvider = StreamProvider<ServerStatus>((ref) {
 
 final serverStatusServiceProvider = Provider<ServerStatusService>((ref) {
   final prefs = ref.watch(userPrefsViewModelProvider.state);
-  return ServerStatusService(prefs);
+  return ServerStatusService(prefs: prefs);
 });
 
 enum ServerStatus {
@@ -29,7 +30,7 @@ enum ServerStatus {
 }
 
 class ServerStatusService {
-  Uri _url;
+  final Uri _url;
   final _http = http.Client();
 
   static const _endpoint = 'login';
@@ -37,13 +38,13 @@ class ServerStatusService {
   final Duration _interval = Duration(seconds: 15);
   var _stopStream = false;
 
-  ServerStatusService(AppPrefs prefs) {
-    _url = buildServerUrl(
-      prefs.host,
-      buildEndpointPath(_endpoint),
-      secure: !prefs.insecureTransport,
-    );
-  }
+  ServerStatusService({@required AppPrefs prefs})
+      : _url = buildServerUrl(
+          prefs.host,
+          buildEndpointPath(_endpoint),
+          secure: !prefs.insecureTransport,
+        ),
+        super();
 
   void stop() {
     _stopStream = true;
