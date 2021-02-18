@@ -26,13 +26,15 @@ class SettingsScreen extends HookWidget {
             style: TextButton.styleFrom(
               primary: Theme.of(context).dialogBackgroundColor,
             ),
-            onPressed: () {
-              settingsVM.updatePrefs(AppPrefs(
-                insecureTransport: unsecuredTransport.value,
-                storeCredentials: storeCredentials.value,
-                host: hostController.text,
-                defaultAuthor: defaultAuthorController.text,
-              ));
+            onPressed: () async {
+              await settingsVM.updatePrefs(
+                AppPrefs(
+                  insecureTransport: unsecuredTransport.value,
+                  storeCredentials: storeCredentials.value,
+                  host: hostController.text,
+                  defaultAuthor: defaultAuthorController.text,
+                ),
+              );
               Navigator.of(context).pop();
             },
             child: Text('Zapisz'),

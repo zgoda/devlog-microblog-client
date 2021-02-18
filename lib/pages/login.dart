@@ -30,12 +30,9 @@ class LoginScreen extends HookWidget {
         contentPadding: DEFAULT_TEXTFIELD_INSETS,
       ),
     );
-    final loginButton = Material(
-      elevation: 5,
-      color: Colors.blueGrey,
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width,
-        padding: DEFAULT_TEXTFIELD_INSETS,
+    final loginButton = SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
         onPressed: () async {
           prefs.updateCredentials(
             Credentials(
@@ -67,7 +64,6 @@ class LoginScreen extends HookWidget {
       body: SingleChildScrollView(
         child: Center(
           child: Container(
-            color: Colors.white,
             child: Padding(
               padding: const EdgeInsets.all(36),
               child: Column(

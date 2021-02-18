@@ -7,13 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AppConfigWizard extends HookWidget {
-  ListTile _verificationStatus(AuthResult status) {
+class VerificationStatus extends StatelessWidget {
+  final AuthResult _status;
+
+  VerificationStatus({Key key, @required AuthResult status})
+      : _status = status,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     Icon icon;
     String message;
     String state;
     final errorIcon = Icon(Icons.lightbulb, color: Colors.red);
-    switch (status) {
+    switch (_status) {
       case AuthResult.none:
         icon = Icon(Icons.lightbulb_outline);
         message = 'Próba połączenia z serwerem';
@@ -42,7 +49,9 @@ class AppConfigWizard extends HookWidget {
       subtitle: Text(message),
     );
   }
+}
 
+class AppConfigWizard extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final currentStep = useState(0);
@@ -114,7 +123,9 @@ class AppConfigWizard extends HookWidget {
         isActive: true,
         content: Column(
           children: <Widget>[
-            _verificationStatus(verificationStatus.value),
+            VerificationStatus(
+              status: verificationStatus.value,
+            ),
             ElevatedButton(
               child: Text('Sprawdź'),
               onPressed: () async {
