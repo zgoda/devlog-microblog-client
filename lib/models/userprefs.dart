@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Credentials extends Equatable {
   final String name;
@@ -18,6 +16,8 @@ class Credentials extends Equatable {
   List<Object> get props => [name, password];
 
   bool get isValid => !['', null].contains(name) && password != null;
+
+  Map<String, String> get loginData => {'name': name, 'password': password};
 }
 
 class AppPrefs extends Equatable {

@@ -2,6 +2,11 @@ import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/userprefs.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+final userPrefsProvider = Provider<AppPrefs>((ref) {
+  final prefs = ref.watch(userPrefsViewModelProvider.state);
+  return prefs;
+});
+
 final userPrefsViewModelProvider =
     StateNotifierProvider<UserPrefsNotifier>((ref) => UserPrefsNotifier());
 

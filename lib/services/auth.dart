@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:devlog_microblog_client/models/userprefs.dart';
-import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/utils/web.dart';
+import 'package:devlog_microblog_client/viewmodels/credentials.dart';
+import 'package:devlog_microblog_client/viewmodels/userprefs.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,10 +15,12 @@ final authTokenProvider = Provider<String>((ref) {
 });
 
 final authenticationServiceProvider = Provider<AuthenticationService>((ref) {
-  final host = ref.watch(hostProvider);
-  final secure = ref.watch(secureTransportProvider);
+  final prefs = ref.watch(userPrefsProvider);
   final credentials = ref.watch(credentialsProvider);
-  return AuthenticationService(host, secure, credentials);
+  return AuthenticationService(
+      host: prefs.host,
+      secure: !prefs.insecureTransport,
+      credentials: credentials);
 });
 
 enum AuthResult {
@@ -27,23 +31,21 @@ enum AuthResult {
 }
 
 class AuthenticationService {
-  String _userName;
-  String _password;
-  Uri _url;
+  final Credentials _credentials;
+  final Uri _url;
   String _token;
   final _http = http.Client();
 
-  static const ENDPOINT = 'login';
+  static const _endpoint = 'login';
 
-  AuthenticationService(String host, bool secure, Credentials credentials) {
-    _userName = credentials.name;
-    _password = credentials.password;
-    _url = buildServerUrl(
-      host,
-      buildEndpointPath(ENDPOINT),
-      secure: secure,
-    );
-  }
+  AuthenticationService(
+      {@required String host,
+      @required bool secure,
+      @required Credentials credentials})
+      : this._credentials = credentials,
+        this._url =
+            buildServerUrl(host, buildEndpointPath(_endpoint), secure: secure),
+        super();
 
   Map<String, String> authHeader() {
     if ([null, ''].contains(_token)) {
@@ -52,17 +54,12 @@ class AuthenticationService {
     return {'Authorization': 'Basic $_token'};
   }
 
-  bool hasCredentials() => ![_userName, _password].contains(null);
-  bool hasToken() => !['', null].contains(_token);
+  bool get hasCredentials => _credentials.isValid;
+  bool get hasToken => !['', null].contains(_token);
 
   Future<AuthResult> login() async {
-    final data = {
-      'name': _userName,
-      'password': _password,
-    };
-    _token = '';
     try {
-      final resp = await _http.post(_url, body: data);
+      final resp = await _http.post(_url, body: _credentials.loginData);
       if (resp.statusCode == 200) {
         final Map<String, dynamic> respData = jsonDecode(resp.body);
         _token = respData['token'];
@@ -74,7 +71,5 @@ class AuthenticationService {
     }
   }
 
-  String get token {
-    return _token;
-  }
+  String get token => _token;
 }

@@ -2,6 +2,11 @@ import 'package:devlog_microblog_client/models/userprefs.dart';
 import 'package:devlog_microblog_client/services/credentials.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+final credentialsProvider = Provider<Credentials>((ref) {
+  final credentials = ref.watch(credentialsViewModelProvider.state);
+  return credentials;
+});
+
 final credentialsViewModelProvider =
     StateNotifierProvider<CredentialsNotifier>((ref) => CredentialsNotifier());
 
