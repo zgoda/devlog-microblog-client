@@ -1,7 +1,8 @@
 import 'package:devlog_microblog_client/models/post.dart';
 import 'package:devlog_microblog_client/services/auth.dart';
-import 'package:devlog_microblog_client/services/localstorage.dart';
 import 'package:devlog_microblog_client/services/post.dart';
+import 'package:devlog_microblog_client/viewmodels/credentials.dart';
+import 'package:devlog_microblog_client/viewmodels/userprefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -88,14 +89,15 @@ class MicroblogEntryList extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final curPage = useState(0);
-    final settings = useProvider(userPrefsProvider.state);
+    final settingsVM = useProvider(userPrefsViewModelProvider);
+    final credentialsVM = useProvider(credentialsViewModelProvider);
     final auth = useProvider(authenticationServiceProvider);
     final postService = useProvider(postCollectionServiceProvider);
     final postListModel = useProvider(postListProvider.state);
     useMemoized(() async {
-      if (settings.isConfigured()) {
+      if (settingsVM.prefs.isConfigured) {
         var okResult;
-        if (settings.hasCredentials()) {
+        if (credentialsVM.credentials.isValid) {
           okResult = await auth.login() == AuthResult.ok;
         } else {
           okResult = await Navigator.of(context).pushNamed('/login');
