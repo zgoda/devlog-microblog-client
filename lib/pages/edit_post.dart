@@ -1,6 +1,7 @@
 import 'package:devlog_microblog_client/models/post.dart';
 import 'package:devlog_microblog_client/services/post.dart';
 import 'package:devlog_microblog_client/utils/forms.dart';
+import 'package:devlog_microblog_client/viewmodels/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,7 +13,8 @@ class PostEditScreen extends HookWidget {
     final textController = useTextEditingController(text: post.text);
     final titleController = useTextEditingController(text: post.title);
     final authorController = useTextEditingController(text: post.author);
-    final postService = useProvider(postCollectionServiceProvider);
+    final postService = useProvider(postServiceProvider);
+    final postCollectionVM = useProvider(postCollectionViewModelProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -26,10 +28,13 @@ class PostEditScreen extends HookWidget {
                 author: authorController.text.trim(),
                 pk: post.pk,
               );
-              await postService.updatePost(newPost);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Aktualizacja posta została wysłana')),
-              );
+              final updatedPost = await postService.updatePost(newPost);
+              if (updatedPost != null) {
+                postCollectionVM.update(newPost);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Aktualizacja posta została wysłana')),
+                );
+              }
               Navigator.of(context).pop();
             },
             child: Text('Zapisz'),

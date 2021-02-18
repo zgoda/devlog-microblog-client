@@ -1,5 +1,6 @@
 import 'package:devlog_microblog_client/pages/appconfig.dart';
 import 'package:devlog_microblog_client/pages/home.dart';
+import 'package:devlog_microblog_client/pages/login.dart';
 import 'package:devlog_microblog_client/providers.dart';
 import 'package:devlog_microblog_client/services/credentials.dart';
 import 'package:devlog_microblog_client/services/userprefs.dart';
@@ -25,7 +26,11 @@ class LoadingScreen extends HookWidget {
       credentialsVM.init(CredentialsService(securePrefs));
       userPrefsVM.init(UserPrefsService(sharedPrefs));
       if (userPrefsVM.prefs.isConfigured) {
-        result = HomeScreen();
+        if (!credentialsVM.credentials.isValid) {
+          result = LoginScreen();
+        } else {
+          result = HomeScreen();
+        }
       } else {
         result = AppConfigWizard();
       }
