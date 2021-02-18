@@ -149,7 +149,7 @@ class AppConfigWizard extends HookWidget {
                 if (currentStep.value < steps.length - 1) {
                   currentStep.value = currentStep.value + 1;
                 } else {
-                  prefs.updatePrefs(
+                  await prefs.updatePrefs(
                     AppPrefs(
                       insecureTransport: insecureTransfer.value,
                       storeCredentials: storeCredentials.value,
@@ -157,7 +157,7 @@ class AppConfigWizard extends HookWidget {
                       defaultAuthor: userNameController.text,
                     ),
                   );
-                  credentials.updateCredentials(
+                  await credentials.updateCredentials(
                     Credentials(
                       name: userNameController.text,
                       password: passwordController.text,

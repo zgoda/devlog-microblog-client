@@ -19,8 +19,8 @@ final serverStatusProvider = StreamProvider<ServerStatus>((ref) {
 });
 
 final serverStatusServiceProvider = Provider<ServerStatusService>((ref) {
-  final prefs = ref.watch(userPrefsViewModelProvider.state);
-  return ServerStatusService(prefs: prefs);
+  final prefsProvider = ref.watch(userPrefsViewModelProvider);
+  return ServerStatusService(prefs: prefsProvider.prefs);
 });
 
 enum ServerStatus {
