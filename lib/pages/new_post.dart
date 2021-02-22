@@ -18,7 +18,6 @@ class PostCreateScreen extends HookWidget {
     final postService = useProvider(postServiceProvider);
     final postCollectionVM = useProvider(postCollectionViewModelProvider);
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Utwórz nowy post'),
         actions: <Widget>[

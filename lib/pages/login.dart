@@ -60,7 +60,6 @@ class LoginScreen extends HookWidget {
       ),
     );
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Center(
           child: Container(

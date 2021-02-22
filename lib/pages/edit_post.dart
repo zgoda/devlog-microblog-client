@@ -16,7 +16,6 @@ class PostEditScreen extends HookWidget {
     final postService = useProvider(postServiceProvider);
     final postCollectionVM = useProvider(postCollectionViewModelProvider);
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Post'),
         actions: <Widget>[
