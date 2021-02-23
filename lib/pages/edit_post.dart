@@ -2,7 +2,6 @@ import 'package:devlog_microblog_client/models/post.dart';
 import 'package:devlog_microblog_client/services/post.dart';
 import 'package:devlog_microblog_client/utils/forms.dart';
 import 'package:devlog_microblog_client/viewmodels/post.dart';
-import 'package:devlog_microblog_client/widgets/post.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -15,7 +14,7 @@ class PostEditScreen extends HookWidget {
     final authorController = useTextEditingController(text: post.author);
     final postService = useProvider(postServiceProvider);
     final postCollectionVM = useProvider(postCollectionViewModelProvider);
-    final postTextState = useProvider(postTextProvider);
+    final textController = useTextEditingController(text: post.text);
     return Scaffold(
       appBar: AppBar(
         title: Text('Post'),
@@ -23,7 +22,7 @@ class PostEditScreen extends HookWidget {
           TextButton(
             onPressed: () async {
               final newPost = Post(
-                text: postTextState.state.trim(),
+                text: textController.text.trim(),
                 title: titleController.text.trim(),
                 author: authorController.text.trim(),
                 pk: post.pk,
@@ -49,7 +48,18 @@ class PostEditScreen extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            PostTextEditor(),
+            TextField(
+              controller: textController,
+              autofocus: true,
+              maxLines: null,
+              minLines: 8,
+              keyboardType: TextInputType.multiline,
+              decoration: InputDecoration(
+                labelText: 'Treść',
+                hintText: 'Treść posta',
+                contentPadding: DEFAULT_TEXTFIELD_INSETS,
+              ),
+            ),
             DEFAULT_FIELD_SPACER,
             TextField(
               controller: titleController,

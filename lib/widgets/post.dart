@@ -1,6 +1,5 @@
 import 'package:devlog_microblog_client/models/post.dart';
 import 'package:devlog_microblog_client/services/post.dart';
-import 'package:devlog_microblog_client/utils/forms.dart';
 import 'package:devlog_microblog_client/viewmodels/credentials.dart';
 import 'package:devlog_microblog_client/viewmodels/post.dart';
 import 'package:devlog_microblog_client/viewmodels/userprefs.dart';
@@ -8,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-final postTextProvider = StateProvider<String>((ref) => '');
 
 class PostMetaInfo extends StatelessWidget {
   final DateTime date;
@@ -56,61 +53,6 @@ class PostTextInfo extends StatelessWidget {
         children: children,
       ),
     );
-  }
-}
-
-class PostTextEditor extends HookWidget {
-  @override
-  Widget build(BuildContext context) {
-    final scrollController = useScrollController();
-    final postTextState = useProvider(postTextProvider);
-    final textController = useTextEditingController(text: postTextState.state);
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        TextField(
-          controller: textController,
-          autofocus: true,
-          maxLines: null,
-          minLines: 8,
-          keyboardType: TextInputType.multiline,
-          decoration: InputDecoration(
-            labelText: 'Treść',
-            hintText: 'Treść posta',
-            contentPadding: DEFAULT_TEXTFIELD_INSETS,
-          ),
-        ),
-        SizedBox(
-          height: 48,
-          child: Scrollbar(
-            controller: scrollController,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: <Widget>[
-                IconButton(
-                  tooltip: 'Pogrubienie',
-                  icon: Icon(Icons.format_bold),
-                  onPressed: () => postTextState.state =
-                      _toggleSelectionFormat(textController, '**', '**'),
-                ),
-                IconButton(
-                  tooltip: 'Pochylenie',
-                  icon: Icon(Icons.format_italic),
-                  onPressed: () => postTextState.state =
-                      _toggleSelectionFormat(textController, '*', '*'),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _toggleSelectionFormat(
-      TextEditingController controller, String left, String right) {
-    return '';
   }
 }
 
