@@ -9,6 +9,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+final postTextProvider = StateProvider<String>((ref) => '');
+
 class PostMetaInfo extends StatelessWidget {
   final DateTime date;
   PostMetaInfo({this.date});
@@ -58,16 +60,11 @@ class PostTextInfo extends StatelessWidget {
 }
 
 class PostTextEditor extends HookWidget {
-  final String _text;
-
-  PostTextEditor({String text, Key key})
-      : _text = text,
-        super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final scrollController = useScrollController();
-    final textController = useTextEditingController(text: _text);
+    final postTextState = useProvider(postTextProvider);
+    final textController = useTextEditingController(text: postTextState.state);
     return Column(
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -85,15 +82,23 @@ class PostTextEditor extends HookWidget {
           ),
         ),
         SizedBox(
-          height: 64,
+          height: 48,
           child: Scrollbar(
             controller: scrollController,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: <Widget>[
                 IconButton(
+                  tooltip: 'Pogrubienie',
                   icon: Icon(Icons.format_bold),
-                  onPressed: () => _toggleSelectionFormat('**', '**'),
+                  onPressed: () => postTextState.state =
+                      _toggleSelectionFormat(textController, '**', '**'),
+                ),
+                IconButton(
+                  tooltip: 'Pochylenie',
+                  icon: Icon(Icons.format_italic),
+                  onPressed: () => postTextState.state =
+                      _toggleSelectionFormat(textController, '*', '*'),
                 ),
               ],
             ),
@@ -103,7 +108,10 @@ class PostTextEditor extends HookWidget {
     );
   }
 
-  void _toggleSelectionFormat(String left, String right) {}
+  String _toggleSelectionFormat(
+      TextEditingController controller, String left, String right) {
+    return '';
+  }
 }
 
 class MicroblogEntryItem extends StatelessWidget {
