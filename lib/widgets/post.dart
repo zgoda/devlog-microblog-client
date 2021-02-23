@@ -1,5 +1,6 @@
 import 'package:devlog_microblog_client/models/post.dart';
 import 'package:devlog_microblog_client/services/post.dart';
+import 'package:devlog_microblog_client/utils/forms.dart';
 import 'package:devlog_microblog_client/viewmodels/credentials.dart';
 import 'package:devlog_microblog_client/viewmodels/post.dart';
 import 'package:devlog_microblog_client/viewmodels/userprefs.dart';
@@ -54,6 +55,55 @@ class PostTextInfo extends StatelessWidget {
       ),
     );
   }
+}
+
+class PostTextEditor extends HookWidget {
+  final String _text;
+
+  PostTextEditor({String text, Key key})
+      : _text = text,
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final scrollController = useScrollController();
+    final textController = useTextEditingController(text: _text);
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        TextField(
+          controller: textController,
+          autofocus: true,
+          maxLines: null,
+          minLines: 8,
+          keyboardType: TextInputType.multiline,
+          decoration: InputDecoration(
+            labelText: 'Treść',
+            hintText: 'Treść posta',
+            contentPadding: DEFAULT_TEXTFIELD_INSETS,
+          ),
+        ),
+        SizedBox(
+          height: 64,
+          child: Scrollbar(
+            controller: scrollController,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.format_bold),
+                  onPressed: () => _toggleSelectionFormat('**', '**'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _toggleSelectionFormat(String left, String right) {}
 }
 
 class MicroblogEntryItem extends StatelessWidget {
