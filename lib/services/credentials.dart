@@ -4,9 +4,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class CredentialsService {
   final FlutterSecureStorage _storage;
 
-  CredentialsService(
-    FlutterSecureStorage storage,
-  )   : this._storage = storage,
+  CredentialsService(FlutterSecureStorage storage)
+      : this._storage = storage,
         super();
 
   static const _userNameKey = 'username';

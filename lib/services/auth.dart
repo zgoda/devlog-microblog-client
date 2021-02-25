@@ -18,9 +18,10 @@ final authenticationServiceProvider = Provider<AuthenticationService>((ref) {
   final prefs = ref.watch(userPrefsProvider);
   final credentials = ref.watch(credentialsProvider);
   return AuthenticationService(
-      host: prefs.host,
-      secure: !prefs.insecureTransport,
-      credentials: credentials);
+    host: prefs.host,
+    secure: !prefs.insecureTransport,
+    credentials: credentials,
+  );
 });
 
 enum AuthResult {
@@ -53,9 +54,6 @@ class AuthenticationService {
     }
     return {'Authorization': 'Basic $_token'};
   }
-
-  bool get hasCredentials => _credentials.isValid;
-  bool get hasToken => !['', null].contains(_token);
 
   Future<AuthResult> login() async {
     try {

@@ -17,6 +17,7 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.more_vert),
+            tooltip: 'Ustawienia aplikacji',
             onPressed: () => Navigator.of(context).pushNamed('/settings'),
           ),
         ],

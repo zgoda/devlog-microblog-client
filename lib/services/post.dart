@@ -24,13 +24,17 @@ class PostService {
 
   static const _collectionEndpoint = 'quips';
   static const _itemEndpoint = 'quip';
+  static const _contentType = 'application/json';
+  static const _contentTypeHeaderKey = 'Content-Type';
 
   PostService({@required AppPrefs prefs, @required AuthenticationService auth})
       : _host = prefs.host,
         _useHttps = !prefs.insecureTransport,
         _collectionUrl = buildServerUrl(
-            prefs.host, buildEndpointPath(_collectionEndpoint),
-            secure: !prefs.insecureTransport),
+          prefs.host,
+          buildEndpointPath(_collectionEndpoint),
+          secure: !prefs.insecureTransport,
+        ),
         _auth = auth,
         super();
 
@@ -40,12 +44,17 @@ class PostService {
     return buildServerUrl(_host, path, secure: _useHttps);
   }
 
+  Map<String, String> _headers() {
+    final headers = _auth.authHeader();
+    headers[_contentTypeHeaderKey] = _contentType;
+    return headers;
+  }
+
   Future<List<Post>> fetchCollection({int page: 1}) async {
     final List<Post> posts = [];
     final url = _collectionUrl.replace(queryParameters: {'p': page.toString()});
     await _auth.login();
-    final headers = _auth.authHeader();
-    final resp = await _http.get(url, headers: headers);
+    final resp = await _http.get(url, headers: _headers());
     if (resp.statusCode == 200) {
       final respData = jsonDecode(resp.body);
       posts.addAll(
@@ -58,10 +67,11 @@ class PostService {
   Future<Post> addPost(Post post) async {
     final requestBody = jsonEncode(post.toMap());
     await _auth.login();
-    final headers = _auth.authHeader();
-    headers['Content-Type'] = 'application/json';
-    final resp =
-        await _http.post(_collectionUrl, headers: headers, body: requestBody);
+    final resp = await _http.post(
+      _collectionUrl,
+      headers: _headers(),
+      body: requestBody,
+    );
     if (resp.statusCode < 300) {
       return Post.fromMap(jsonDecode(resp.body)['quip']);
     }
@@ -72,9 +82,7 @@ class PostService {
     final url = _itemUrl(post);
     final requestBody = jsonEncode(post.toMap());
     await _auth.login();
-    final headers = _auth.authHeader();
-    headers['Content-Type'] = 'application/json';
-    final resp = await _http.put(url, headers: headers, body: requestBody);
+    final resp = await _http.put(url, headers: _headers(), body: requestBody);
     if (resp.statusCode < 300) {
       return Post.fromMap(jsonDecode(resp.body)['quip']);
     }
