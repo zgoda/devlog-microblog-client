@@ -24,16 +24,14 @@ class Post extends Equatable {
   @override
   bool get stringify => true;
 
-  factory Post.fromMap(Map<String, dynamic> json) {
-    return Post(
-      title: json['title'],
-      text: json['text'],
-      author: json['author'],
-      textHtml: json['textHtml'],
-      created: DateTime.parse(json['created']).toLocal(),
-      pk: json['pk'],
-    );
-  }
+  factory Post.fromMap(Map<String, dynamic> json) => Post(
+        title: json['title'],
+        text: json['text'],
+        author: json['author'],
+        textHtml: json['textHtml'],
+        created: DateTime.parse(json['created']).toLocal(),
+        pk: json['pk'],
+      );
 
   Map<String, dynamic> toMap() => {
         'title': title,

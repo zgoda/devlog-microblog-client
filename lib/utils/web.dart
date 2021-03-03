@@ -11,6 +11,4 @@ Uri buildServerUrl(String host, String path,
   return Uri.http(host, path, params);
 }
 
-String buildEndpointPath(String endpoint) {
-  return [API_ROOT, endpoint].join('/');
-}
+String buildEndpointPath(String endpoint) => [API_ROOT, endpoint].join('/');

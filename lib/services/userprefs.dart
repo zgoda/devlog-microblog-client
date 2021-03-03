@@ -14,14 +14,12 @@ class UserPrefsService {
   static const _storeCredentialsKey = 'storeCredentials';
   static const _defaultAuthorKey = 'defaultAuthor';
 
-  AppPrefs get prefs {
-    return AppPrefs(
-      host: _storage.getString(_hostKey) ?? '',
-      defaultAuthor: _storage.getString(_defaultAuthorKey) ?? '',
-      insecureTransport: _storage.getBool(_insecureTransportKey) ?? false,
-      storeCredentials: _storage.getBool(_storeCredentialsKey) ?? true,
-    );
-  }
+  AppPrefs get prefs => AppPrefs(
+        host: _storage.getString(_hostKey) ?? '',
+        defaultAuthor: _storage.getString(_defaultAuthorKey) ?? '',
+        insecureTransport: _storage.getBool(_insecureTransportKey) ?? false,
+        storeCredentials: _storage.getBool(_storeCredentialsKey) ?? true,
+      );
 
   Future<void> savePrefs(AppPrefs prefs) async {
     await _storage.setString(_hostKey, prefs.host);
