@@ -3,12 +3,13 @@ import 'package:devlog_microblog_client/services/credentials.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final credentialsProvider = Provider<Credentials>((ref) {
-  final credentials = ref.watch(credentialsViewModelProvider.state);
+  final credentials = ref.watch(credentialsViewModelProvider);
   return credentials;
 });
 
 final credentialsViewModelProvider =
-    StateNotifierProvider<CredentialsNotifier>((ref) => CredentialsNotifier());
+    StateNotifierProvider<CredentialsNotifier, Credentials>(
+        (ref) => CredentialsNotifier());
 
 class CredentialsNotifier extends StateNotifier<Credentials> {
   CredentialsNotifier() : super(Credentials(name: '', password: ''));

@@ -13,7 +13,8 @@ class PostEditScreen extends HookWidget {
     final titleController = useTextEditingController(text: post.title);
     final authorController = useTextEditingController(text: post.author);
     final postService = useProvider(postServiceProvider);
-    final postCollectionVM = useProvider(postCollectionViewModelProvider);
+    final postCollectionVM =
+        useProvider(postCollectionViewModelProvider.notifier);
     final textController = useTextEditingController(text: post.text);
     return Scaffold(
       appBar: AppBar(

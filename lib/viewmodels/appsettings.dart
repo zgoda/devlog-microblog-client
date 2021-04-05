@@ -8,8 +8,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 final appSettingsInitializer = FutureProvider<bool>((ref) async {
   final sharedPrefs = await ref.read(sharedPrefsProvider.future);
   final securePrefs = ref.read(securePrefsProvider);
-  final userPrefsVMNotifier = ref.read(userPrefsViewModelProvider);
-  final credentialsVMNotifier = ref.read(credentialsViewModelProvider);
+  final userPrefsVMNotifier = ref.read(userPrefsViewModelProvider.notifier);
+  final credentialsVMNotifier = ref.read(credentialsViewModelProvider.notifier);
   userPrefsVMNotifier.init(UserPrefsService(sharedPrefs));
   await credentialsVMNotifier.init(CredentialsService(securePrefs));
   return true;

@@ -20,8 +20,8 @@ class LoadingScreen extends HookWidget {
       ),
     );
     appSettingsInitialized.whenData((_) {
-      if (userPrefsVM.prefs.isConfigured) {
-        if (!credentialsVM.credentials.isValid) {
+      if (userPrefsVM.isConfigured) {
+        if (!credentialsVM.isValid) {
           result = LoginScreen();
         } else {
           result = HomeScreen();

@@ -61,8 +61,9 @@ class AppConfigWizard extends HookWidget {
     final userNameController = useTextEditingController();
     final passwordController = useTextEditingController();
     final verificationStatus = useState(AuthResult.none);
-    final prefs = useProvider(userPrefsViewModelProvider);
-    final credentials = useProvider(credentialsViewModelProvider);
+    final prefsNotifier = useProvider(userPrefsViewModelProvider.notifier);
+    final credentialsNotifier =
+        useProvider(credentialsViewModelProvider.notifier);
     final steps = <Step>[
       Step(
         title: const Text('Serwer'),
@@ -159,7 +160,7 @@ class AppConfigWizard extends HookWidget {
                 if (currentStep.value < steps.length - 1) {
                   currentStep.value = currentStep.value + 1;
                 } else {
-                  await prefs.updatePrefs(
+                  await prefsNotifier.updatePrefs(
                     AppPrefs(
                       insecureTransport: insecureTransfer.value,
                       storeCredentials: storeCredentials.value,
@@ -167,7 +168,7 @@ class AppConfigWizard extends HookWidget {
                       defaultAuthor: userNameController.text,
                     ),
                   );
-                  await credentials.updateCredentials(
+                  await credentialsNotifier.updateCredentials(
                     Credentials(
                       name: userNameController.text,
                       password: passwordController.text,

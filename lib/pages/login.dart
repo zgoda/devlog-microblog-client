@@ -9,7 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class LoginScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final prefs = useProvider(credentialsViewModelProvider);
+    final prefsNotifier = useProvider(credentialsViewModelProvider.notifier);
     final auth = useProvider(authenticationServiceProvider);
     final userNameController = useTextEditingController();
     final passwordController = useTextEditingController();
@@ -34,7 +34,7 @@ class LoginScreen extends HookWidget {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: () async {
-          prefs.updateCredentials(
+          prefsNotifier.updateCredentials(
             Credentials(
               name: userNameController.text,
               password: passwordController.text,

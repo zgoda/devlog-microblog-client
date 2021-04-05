@@ -13,7 +13,7 @@ class PostCreateScreen extends HookWidget {
     final prefsVM = useProvider(userPrefsViewModelProvider);
     final titleController = useTextEditingController();
     final authorController =
-        useTextEditingController(text: prefsVM.prefs.defaultAuthor);
+        useTextEditingController(text: prefsVM.defaultAuthor);
     final postService = useProvider(postServiceProvider);
     final postCollectionVM = useProvider(postCollectionViewModelProvider);
     final textController = useTextEditingController();

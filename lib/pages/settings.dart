@@ -9,15 +9,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class SettingsScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final settingsVM = useProvider(userPrefsViewModelProvider);
+    final settings = useProvider(userPrefsViewModelProvider);
+    final settingsNotifier = useProvider(userPrefsViewModelProvider.notifier);
     final hostController = useTextEditingController(
-      text: settingsVM.prefs.host,
+      text: settings.host,
     );
     final defaultAuthorController = useTextEditingController(
-      text: settingsVM.prefs.defaultAuthor,
+      text: settings.defaultAuthor,
     );
-    final unsecuredTransport = useState(settingsVM.prefs.insecureTransport);
-    final storeCredentials = useState(settingsVM.prefs.storeCredentials);
+    final unsecuredTransport = useState(settings.insecureTransport);
+    final storeCredentials = useState(settings.storeCredentials);
     return Scaffold(
       appBar: AppBar(
         title: Text('Ustawienia aplikacji'),
@@ -27,7 +28,7 @@ class SettingsScreen extends HookWidget {
               primary: Theme.of(context).dialogBackgroundColor,
             ),
             onPressed: () async {
-              await settingsVM.updatePrefs(
+              await settingsNotifier.updatePrefs(
                 AppPrefs(
                   insecureTransport: unsecuredTransport.value,
                   storeCredentials: storeCredentials.value,

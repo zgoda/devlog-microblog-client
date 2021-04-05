@@ -93,9 +93,9 @@ class MicroblogEntryList extends HookWidget {
     final credentialsVM = useProvider(credentialsViewModelProvider);
     final postService = useProvider(postServiceProvider);
     final postCollectionVM = useProvider(postCollectionViewModelProvider);
-    final postCollection = useProvider(postCollectionViewModelProvider.state);
+    final postCollection = useProvider(postCollectionViewModelProvider);
     useMemoized(() async {
-      if (settingsVM.prefs.isConfigured && credentialsVM.credentials.isValid) {
+      if (settingsVM.isConfigured && credentialsVM.isValid) {
         final posts = await _fetchPostsPage(curPage.value, postService);
         if (posts.isNotEmpty) {
           postCollectionVM.addAll(posts);

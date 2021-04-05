@@ -2,7 +2,7 @@ import 'package:devlog_microblog_client/models/post.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final postCollectionViewModelProvider =
-    StateNotifierProvider<PostCollectionNotifier>(
+    StateNotifierProvider<PostCollectionNotifier, List<Post>>(
         (ref) => PostCollectionNotifier());
 
 class PostCollectionNotifier extends StateNotifier<List<Post>> {
