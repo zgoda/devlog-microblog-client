@@ -51,9 +51,9 @@ class VerificationStatus extends StatelessWidget {
   }
 }
 
-class AppConfigWizard extends HookWidget {
+class AppConfigWizard extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final currentStep = useState(0);
     final hostController = useTextEditingController();
     final insecureTransfer = useState(false);
@@ -61,9 +61,9 @@ class AppConfigWizard extends HookWidget {
     final userNameController = useTextEditingController();
     final passwordController = useTextEditingController();
     final verificationStatus = useState(AuthResult.none);
-    final prefsNotifier = useProvider(userPrefsViewModelProvider.notifier);
+    final prefsNotifier = ref.watch(userPrefsViewModelProvider.notifier);
     final credentialsNotifier =
-        useProvider(credentialsViewModelProvider.notifier);
+        ref.watch(credentialsViewModelProvider.notifier);
     final steps = <Step>[
       Step(
         title: const Text('Serwer'),

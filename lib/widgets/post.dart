@@ -81,19 +81,19 @@ class MicroblogEntryItem extends StatelessWidget {
   }
 }
 
-class MicroblogEntryList extends HookWidget {
+class MicroblogEntryList extends HookConsumerWidget {
   Future<List<Post>> _fetchPostsPage(int curPage, PostService service) async {
     return await service.fetchCollection(page: curPage + 1);
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final curPage = useState(0);
-    final settingsVM = useProvider(userPrefsViewModelProvider);
-    final credentialsVM = useProvider(credentialsViewModelProvider);
-    final postService = useProvider(postServiceProvider);
-    final postCollectionVM = useProvider(postCollectionViewModelProvider);
-    final postCollection = useProvider(postCollectionViewModelProvider);
+    final settingsVM = ref.watch(userPrefsViewModelProvider);
+    final credentialsVM = ref.watch(credentialsViewModelProvider);
+    final postService = ref.watch(postServiceProvider);
+    final postCollectionVM = ref.watch(postCollectionViewModelProvider);
+    final postCollection = ref.watch(postCollectionViewModelProvider);
     useMemoized(() async {
       if (settingsVM.isConfigured && credentialsVM.isValid) {
         final posts = await _fetchPostsPage(curPage.value, postService);

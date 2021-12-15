@@ -1,9 +1,8 @@
 import 'package:devlog_microblog_client/services/serverstatus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ServerStatusIcon extends HookWidget {
+class ServerStatusIcon extends HookConsumerWidget {
   Icon _serverStatusIcon(ServerStatus status) {
     Icon icon;
     switch (status) {
@@ -27,8 +26,8 @@ class ServerStatusIcon extends HookWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final serverStatus = useProvider(serverStatusProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final serverStatus = ref.watch(serverStatusProvider);
     Widget result;
     serverStatus.when(
       data: (status) => result = _serverStatusIcon(status),

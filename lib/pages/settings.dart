@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class SettingsScreen extends HookWidget {
+class SettingsScreen extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    final settings = useProvider(userPrefsViewModelProvider);
-    final settingsNotifier = useProvider(userPrefsViewModelProvider.notifier);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(userPrefsViewModelProvider);
+    final settingsNotifier = ref.watch(userPrefsViewModelProvider.notifier);
     final hostController = useTextEditingController(
       text: settings.host,
     );

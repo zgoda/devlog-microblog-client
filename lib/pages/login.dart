@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class LoginScreen extends HookWidget {
+class LoginScreen extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    final prefsNotifier = useProvider(credentialsViewModelProvider.notifier);
-    final auth = useProvider(authenticationServiceProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final prefsNotifier = ref.watch(credentialsViewModelProvider.notifier);
+    final auth = ref.watch(authenticationServiceProvider);
     final userNameController = useTextEditingController();
     final passwordController = useTextEditingController();
     final userNameField = TextField(

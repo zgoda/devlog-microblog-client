@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PostEditScreen extends HookWidget {
+class PostEditScreen extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final Post post = ModalRoute.of(context).settings.arguments;
     final titleController = useTextEditingController(text: post.title);
     final authorController = useTextEditingController(text: post.author);
-    final postService = useProvider(postServiceProvider);
+    final postService = ref.watch(postServiceProvider);
     final postCollectionVM =
-        useProvider(postCollectionViewModelProvider.notifier);
+        ref.watch(postCollectionViewModelProvider.notifier);
     final textController = useTextEditingController(text: post.text);
     return Scaffold(
       appBar: AppBar(

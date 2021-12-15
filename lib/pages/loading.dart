@@ -5,15 +5,14 @@ import 'package:devlog_microblog_client/viewmodels/appsettings.dart';
 import 'package:devlog_microblog_client/viewmodels/credentials.dart';
 import 'package:devlog_microblog_client/viewmodels/userprefs.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class LoadingScreen extends HookWidget {
+class LoadingScreen extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    final appSettingsInitialized = useProvider(appSettingsInitializer);
-    final credentialsVM = useProvider(credentialsViewModelProvider);
-    final userPrefsVM = useProvider(userPrefsViewModelProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appSettingsInitialized = ref.watch(appSettingsInitializer);
+    final credentialsVM = ref.watch(credentialsViewModelProvider);
+    final userPrefsVM = ref.watch(userPrefsViewModelProvider);
     Widget result = Scaffold(
       body: Center(
         child: CircularProgressIndicator(),

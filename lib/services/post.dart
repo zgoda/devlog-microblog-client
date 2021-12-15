@@ -54,12 +54,16 @@ class PostService {
     final List<Post> posts = [];
     final url = _collectionUrl.replace(queryParameters: {'p': page.toString()});
     await _auth.login();
-    final resp = await _http.get(url, headers: _headers());
-    if (resp.statusCode == 200) {
-      final respData = jsonDecode(resp.body);
-      posts.addAll(
-        respData['quips'].map<Post>((item) => Post.fromMap(item)).toList(),
-      );
+    try {
+      final resp = await _http.get(url, headers: _headers());
+      if (resp.statusCode == 200) {
+        final respData = jsonDecode(resp.body);
+        posts.addAll(
+          respData['quips'].map<Post>((item) => Post.fromMap(item)).toList(),
+        );
+      }
+    } catch (err) {
+      print('Err on post list load: $err');
     }
     return posts;
   }
