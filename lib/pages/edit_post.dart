@@ -39,7 +39,7 @@ class PostEditScreen extends HookConsumerWidget {
             },
             child: Text('Zapisz'),
             style: TextButton.styleFrom(
-              primary: Theme.of(context).dialogBackgroundColor,
+              foregroundColor: Theme.of(context).dialogBackgroundColor,
             ),
           ),
         ],

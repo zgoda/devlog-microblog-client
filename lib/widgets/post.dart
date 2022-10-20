@@ -17,7 +17,7 @@ class PostMetaInfo extends StatelessWidget {
     final day = date.day.toString().padLeft(2, '0');
     final month = date.month.toString().padLeft(2, '0');
     final year = date.year.toString();
-    final h6 = Theme.of(context).textTheme.headline6;
+    final h6 = Theme.of(context).textTheme.titleLarge;
     return Container(
       margin: EdgeInsets.only(right: 16),
       child: Column(
@@ -41,7 +41,7 @@ class PostTextInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Widget> children = [];
     if (![null, ''].contains(title)) {
-      children.add(Text(title, style: Theme.of(context).textTheme.headline6));
+      children.add(Text(title, style: Theme.of(context).textTheme.titleLarge));
     }
     children.addAll([
       SizedBox(height: 6),

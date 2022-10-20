@@ -25,7 +25,7 @@ class SettingsScreen extends HookConsumerWidget {
         actions: <Widget>[
           TextButton(
             style: TextButton.styleFrom(
-              primary: Theme.of(context).dialogBackgroundColor,
+              foregroundColor: Theme.of(context).dialogBackgroundColor,
             ),
             onPressed: () async {
               await settingsNotifier.updatePrefs(
